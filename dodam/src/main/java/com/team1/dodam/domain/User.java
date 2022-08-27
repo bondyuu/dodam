@@ -2,6 +2,8 @@ package com.team1.dodam.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
+import com.team1.dodam.shared.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,26 +18,34 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "users")
+@Entity
 public class User extends Timestamped {
-    // ID가 자동으로 생성 및 증가합니다.
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long userId;
+    private Long id;
 
-    // 반드시 값을 가지도록 합니다.
     @Column(nullable = false)
-    private String username;
+    private String email;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String birth;
+
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false)
     @JsonIgnore
     private String password;
 
     @Column
-    private String introduction;
+    private String imageUrl;
 
-    @Column
-    private String imgUrl;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    Authority authority;
 
     @Override
     public boolean equals(Object o) {
@@ -46,7 +56,7 @@ public class User extends Timestamped {
             return false;
         }
         User user = (User) o;
-        return userId != null && Objects.equals(userId, user.userId);
+        return id != null && Objects.equals(id, user.id);
     }
 
     @Override
@@ -57,6 +67,4 @@ public class User extends Timestamped {
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
-
-
 }

@@ -7,11 +7,9 @@ import com.team1.dodam.domain.User;
 import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.RefreshTokenRepository;
-import com.team1.dodam.shared.Authority;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -34,7 +32,6 @@ public class TokenProvider {
   private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 7;     //7일
 
   private final Key key;
-
   private final RefreshTokenRepository refreshTokenRepository;
 //  private final UserDetailsServiceImpl userDetailsService;
 
@@ -50,8 +47,8 @@ public class TokenProvider {
 
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
-        .setSubject(user.getUsername())
-        .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
+        .setSubject(user.getEmail())
+        .claim(AUTHORITIES_KEY, user.getAuthority().toString())
         .setExpiration(accessTokenExpiresIn)
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
@@ -62,7 +59,7 @@ public class TokenProvider {
         .compact();
 
     RefreshToken refreshTokenObject = RefreshToken.builder()
-        .id(user.getUserId())
+        .id(user.getId())
         .user(user)
         .refreshTokenValue(refreshToken)
         .build();

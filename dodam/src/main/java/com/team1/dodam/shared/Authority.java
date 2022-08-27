@@ -1,6 +1,7 @@
 package com.team1.dodam.shared;
 
 public enum Authority {
-  ROLE_MEMBER,
-  ROLE_GUEST
+  ROLE_USER,
+  ROLE_ADMIN,
+  ROLE_MEMBER
 }

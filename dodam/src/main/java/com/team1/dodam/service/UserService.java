@@ -28,7 +28,8 @@ public class UserService {
 
     @Transactional
     public ResponseDto<?> signup(SignupRequestDto requestDto) {
-        Authority  authority = Authority.ROLE_GIVE;
+
+        Authority  authority = null;
 
         if (isPresentEmail(requestDto.getEmail()) != null) {
             return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
@@ -44,6 +45,11 @@ public class UserService {
 
         if(requestDto.getAuthority().equals("ROLE_ADMIN")){
             authority = Authority.ROLE_ADMIN;
+        }
+
+
+        if(requestDto.getAuthority().equals("ROLE_GIVE")){
+            authority = Authority.ROLE_GIVE;
         }
 
         if(requestDto.getAuthority().equals("ROLE_TAKE")){

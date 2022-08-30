@@ -38,7 +38,10 @@ public enum ErrorCode {
     //S3
     UPLOAD_FAILED(400, "UPLOAD_FAILED", "S3 Bucket 객체 업로드 실패."),
     DELETE_FAILED(400, "DELETE_FAILED", "S3 Bucket 객체 삭제 실패."),
-    INVALID_IMAGE_FILE_EXTENSION(400, "INVALID_IMAGE_FILE_EXTENSION", "bmp,jpg,jpeg,png 형식의 이미지 파일이 요구됨.");
+    INVALID_IMAGE_FILE_EXTENSION(400, "INVALID_IMAGE_FILE_EXTENSION", "bmp,jpg,jpeg,png 형식의 이미지 파일이 요구됨."),
+
+    //유저 권한
+    NOT_VALID_AUTHOTIRY(400, "NOT_VALID_AUTHOTIRY", "권한이 없습니다.");
 
     private final int status;
     private final String code;

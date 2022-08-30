@@ -28,7 +28,7 @@ public class UserService {
 
     @Transactional
     public ResponseDto<?> signup(SignupRequestDto requestDto) {
-        Authority  authority = Authority.ROLE_USER;
+        Authority  authority = null;
 
         if (isPresentUser(requestDto.getEmail()) != null) {
             return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
@@ -46,8 +46,12 @@ public class UserService {
             authority = Authority.ROLE_ADMIN;
         }
 
-        if(requestDto.getAuthority().equals("ROLE_MEMBER")){
-            authority = Authority.ROLE_MEMBER;
+        if(requestDto.getAuthority().equals("ROLE_GIVE")){
+            authority = Authority.ROLE_GIVE;
+        }
+
+        if(requestDto.getAuthority().equals("ROLE_TAKE")){
+            authority = Authority.ROLE_TAKE;
         }
         User user = User.builder()
                 .email(requestDto.getEmail())

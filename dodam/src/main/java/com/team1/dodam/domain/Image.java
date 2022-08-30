@@ -1,25 +1,28 @@
 package com.team1.dodam.domain;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class TalentTag {
+@Getter
+public class Image extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String tag;
+    private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "talentId")
+    @JoinColumn(name = "talent_id")
     private Talent talent;
 }

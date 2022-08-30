@@ -15,7 +15,7 @@ import static javax.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Talent {
+public class Talent extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,32 +26,15 @@ public class Talent {
     private User user;
 
     @Column
-    private String imageUrl;
-
-    @Column
     private String title;
-
     @Column
     private String content;
 
-    @Column
-    private String date;
-
-    @Column
-    private String place;
-
-    @Column
-    @OneToMany(mappedBy = "talent", cascade = ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<TalentTag> tagList;
-
     @Builder
-    public Talent(TalentRequestDto requestDto, String imageUrl, User user) {
+    public Talent(TalentRequestDto requestDto, User user) {
         this.user = user;
-        this.imageUrl = imageUrl;
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.date = requestDto.getDate();
-        this.place = requestDto.getPlace();
     }
 
 }

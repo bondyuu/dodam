@@ -23,8 +23,7 @@ public class TalentController {
     public ResponseDto<?> talentPosting(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                         @RequestPart TalentRequestDto requestDto,
                                         @RequestPart(required = false)MultipartFile imageFile) throws IOException {
-        System.out.println(requestDto);
-        System.out.println(imageFile);
+
         return talentService.posting(userDetails, requestDto, imageFile);
     }
 }

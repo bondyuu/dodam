@@ -15,8 +15,6 @@ import java.util.List;
 public class TalentRequestDto {
     private String title;
     private String content;
-    private String date;
-    private String place;
     private List<String> tagList;
 
 

@@ -28,9 +28,9 @@ public class UserService {
 
     @Transactional
     public ResponseDto<?> signup(SignupRequestDto requestDto) {
-        Authority  authority = Authority.ROLE_USER;
+        Authority  authority = Authority.ROLE_GIVE;
 
-        if (isPresentUser(requestDto.getEmail()) != null) {
+        if (isPresentEmail(requestDto.getEmail()) != null) {
             return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
         }
 
@@ -46,9 +46,10 @@ public class UserService {
             authority = Authority.ROLE_ADMIN;
         }
 
-        if(requestDto.getAuthority().equals("ROLE_MEMBER")){
-            authority = Authority.ROLE_MEMBER;
+        if(requestDto.getAuthority().equals("ROLE_TAKE")){
+            authority = Authority.ROLE_TAKE;
         }
+
         User user = User.builder()
                 .email(requestDto.getEmail())
                 .name(requestDto.getName())
@@ -67,7 +68,7 @@ public class UserService {
     }
 
     public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
-        User user = isPresentUser(requestDto.getEmail());
+        User user = isPresentEmail(requestDto.getEmail());
         if (user == null) {
             return ResponseDto.fail(ErrorCode.USER_NOT_FOUND);
         }
@@ -102,8 +103,8 @@ public class UserService {
         return tokenProvider.deleteRefreshToken(user);
     }
 
-    public ResponseDto<?> check(EmailCheckDto emailCheckDto) {
-        User user = isPresentUser(emailCheckDto.getEmail());
+    public ResponseDto<?> emailCheck(EmailCheckDto emailCheckDto) {
+        User user = isPresentEmail(emailCheckDto.getEmail());
         if (user == null) {
             return ResponseDto.success(MessageResponseDto.builder().msg("사용가능한 이메일입니다.").build());
         }
@@ -111,9 +112,17 @@ public class UserService {
         return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
     }
 
+    public ResponseDto<?> nicknameCheck(NicknameCheckDto nicknameCheckDto) {
+        User user = isPresentNickname(nicknameCheckDto.getNickname());
+        if (user == null) {
+            return ResponseDto.success(MessageResponseDto.builder().msg("사용가능한 닉네임입니다.").build());
+        }
+
+        return ResponseDto.fail(ErrorCode.DUPLICATED_NICKNAME);
+    }
 
     @Transactional(readOnly = true)
-    public User isPresentUser(String email) {
+    public User isPresentEmail(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.orElse(null);
     }

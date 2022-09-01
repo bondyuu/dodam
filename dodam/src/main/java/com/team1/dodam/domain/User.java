@@ -30,12 +30,7 @@ public class User extends Timestamped {
 
     @Column(nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String birth;
+    
 
     @Column(nullable = false)
     private String nickname;
@@ -45,11 +40,10 @@ public class User extends Timestamped {
     private String password;
 
     @Column
-    private String imageUrl;
+    private String location;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    Authority authority;
+    @Column
+    private String profileUrl;
 
     @Override
     public boolean equals(Object o) {

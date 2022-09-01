@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginResponseDto {
     private Long id;
-    private String birth;
     private String nickname;
-    private String authority;
     private TokenDto token;
 }

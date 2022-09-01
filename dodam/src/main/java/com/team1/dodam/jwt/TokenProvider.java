@@ -7,6 +7,7 @@ import com.team1.dodam.domain.User;
 import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.RefreshTokenRepository;
+import com.team1.dodam.shared.Authority;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -48,7 +49,7 @@ public class TokenProvider {
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
         .setSubject(user.getEmail())
-        .claim(AUTHORITIES_KEY, user.getAuthority().toString())
+        .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
         .setExpiration(accessTokenExpiresIn)
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();

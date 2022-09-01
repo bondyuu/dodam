@@ -42,11 +42,11 @@ public class UserController {
 
     //이메일 중복 확인
     @ApiOperation(value = "이메일 중복 확인 메소드")
-    @PostMapping("/email/check")
+    @PostMapping("/check/email")
     public ResponseDto<?> check(@RequestBody EmailCheckDto emailCheckDto ) { return userService.emailCheck(emailCheckDto); }
 
     //닉네임 중복 확인
     @ApiOperation(value = "닉네임 중복 확인 메소드")
-    @PostMapping("/nickname/check")
+    @PostMapping("/check/nickname")
     public ResponseDto<?> nicknameCheck(@RequestBody NicknameCheckDto nicknameCheckDto) { return userService.nicknameCheck(nicknameCheckDto); }
 }

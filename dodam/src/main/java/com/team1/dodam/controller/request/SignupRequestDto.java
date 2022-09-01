@@ -19,12 +19,6 @@ public class SignupRequestDto {
     private String email;
 
     @NotBlank
-    private String name;
-
-    @NotBlank
-    private String birth;
-
-    @NotBlank
     private String nickname;
 
     @NotBlank
@@ -35,8 +29,6 @@ public class SignupRequestDto {
     @NotBlank
     private String passwordConfirm;
 
-    private String imageUrl;
-
     @NotBlank
-    private String authority;
+    private String location;
 }

@@ -22,7 +22,5 @@ public class Image extends Timestamped{
     @Column
     private String imageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "talent_id")
-    private Talent talent;
+ 
 }

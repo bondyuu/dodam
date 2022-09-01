@@ -23,6 +23,7 @@ public enum ErrorCode {
     //Post
     POST_NOT_FOUND(400, "POST_NOT_FOUND", "존재하지 않는 게시글입니다."),
     POST_UNAUTHORIZED(401, "POST_UNAUTHORIZED", "게시글에 대한 권한이 없습니다."),
+    POST_IMAGE_LENGTH_EXCEEDED(402, "POST_IMAGE_LENGTH_EXCEEDED", "이미지는 최대 5개 업로드할 수 있습니다."),
 
     //Comment
     COMMENT_NOT_FOUND(400, "COMMENT_NOT_FOUND", "존재하지 않는 댓글입니다."),

@@ -1,7 +1,5 @@
 package com.team1.dodam.controller;
 
-
-
 import com.team1.dodam.controller.request.EmailCheckDto;
 import com.team1.dodam.controller.request.LoginRequestDto;
 import com.team1.dodam.controller.request.NicknameCheckDto;

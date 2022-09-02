@@ -29,7 +29,6 @@ public class UserService {
     @Transactional
     public ResponseDto<?> signup(SignupRequestDto requestDto) {
 
-        Authority  authority = null;
 
         if (isPresentEmail(requestDto.getEmail()) != null) {
             return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
@@ -43,27 +42,12 @@ public class UserService {
             return ResponseDto.fail(ErrorCode.PASSWORDS_NOT_MATCHED);
         }
 
-        if(requestDto.getAuthority().equals("ROLE_ADMIN")){
-            authority = Authority.ROLE_ADMIN;
-        }
-
-
-        if(requestDto.getAuthority().equals("ROLE_GIVE")){
-            authority = Authority.ROLE_GIVE;
-        }
-
-        if(requestDto.getAuthority().equals("ROLE_TAKE")){
-            authority = Authority.ROLE_TAKE;
-        }
 
         User user = User.builder()
                 .email(requestDto.getEmail())
-                .name(requestDto.getName())
-                .birth(requestDto.getBirth())
                 .nickname(requestDto.getNickname())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
-                .imageUrl("")
-                .authority(authority)
+                .location(requestDto.getLocation())
                 .build();
 
         userRepository.save(user);
@@ -89,9 +73,7 @@ public class UserService {
         return ResponseDto.success(
                 LoginResponseDto.builder()
                         .id(user.getId())
-                        .birth(user.getBirth())
                         .nickname(user.getNickname())
-                        .authority(user.getAuthority().toString())
                         .token(tokenDto)
                         .build());
     }

@@ -31,9 +31,9 @@ public class PostService {
 
         User loginUser = userDetails.getUser();
 
-        if (loginUser.getAuthority() != Authority.ROLE_GIVE) {
-            return ResponseDto.fail(ErrorCode.NOT_VALID_AUTHOTIRY);
-        }
+//        if (loginUser.getAuthority() != Authority.ROLE_GIVE) {
+//            return ResponseDto.fail(ErrorCode.NOT_VALID_AUTHOTIRY);
+//        }
 
         Post post = postRepository.save(Post.builder()
                                             .user(loginUser)

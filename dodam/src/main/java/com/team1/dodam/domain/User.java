@@ -3,6 +3,7 @@ package com.team1.dodam.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
+import com.team1.dodam.controller.request.ProfileEditRequestDto;
 import com.team1.dodam.shared.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -55,6 +57,10 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
+    public void edit(String imageUrl, ProfileEditRequestDto requestDto) {
+        this.profileUrl = imageUrl;
+        this.nickname = requestDto.getNickname();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) {

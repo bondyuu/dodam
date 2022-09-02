@@ -45,6 +45,16 @@ public class User extends Timestamped {
     @Column
     private String profileUrl;
 
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "user",
+            orphanRemoval = true)
+    private List<Post> postList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "user",
+            orphanRemoval = true)
+    private List<Image> imageList = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

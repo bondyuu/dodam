@@ -1,18 +1,19 @@
 package com.team1.dodam.controller;
 
-import com.team1.dodam.controller.request.EmailCheckDto;
-import com.team1.dodam.controller.request.LoginRequestDto;
-import com.team1.dodam.controller.request.NicknameCheckDto;
-import com.team1.dodam.controller.request.SignupRequestDto;
+import com.team1.dodam.controller.request.*;
 import com.team1.dodam.controller.response.ResponseDto;
+import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Api(tags = {"로그인/회원가입/로그아웃/이메일 중복 확인/닉네임 중복 확인"})
 @RestController
@@ -49,4 +50,12 @@ public class UserController {
     @ApiOperation(value = "닉네임 중복 확인 메소드")
     @PostMapping("/check/nickname")
     public ResponseDto<?> nicknameCheck(@RequestBody NicknameCheckDto nicknameCheckDto) { return userService.nicknameCheck(nicknameCheckDto); }
+
+    @ApiOperation(value = "회원 정보 수정 메소드")
+    @PutMapping
+    public ResponseDto<?> editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                      @RequestPart(value = "imageFile", required = false)MultipartFile imageFile,
+                                      @RequestPart(value = "nickname")ProfileEditRequestDto requestDto) throws IOException {
+        return userService.editProfile(userDetails, imageFile, requestDto);
+    }
 }

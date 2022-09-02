@@ -1,21 +1,26 @@
 package com.team1.dodam.service;
 
 import com.team1.dodam.controller.request.*;
+import com.team1.dodam.controller.response.EditProfileResponseDto;
 import com.team1.dodam.controller.response.LoginResponseDto;
 import com.team1.dodam.controller.response.MessageResponseDto;
 import com.team1.dodam.controller.response.ResponseDto;
 import com.team1.dodam.domain.User;
+import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.jwt.TokenProvider;
 import com.team1.dodam.repository.UserRepository;
+import com.team1.dodam.s3.S3UploadService;
 import com.team1.dodam.shared.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -25,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final S3UploadService s3UploadService;
 
     @Transactional
     public ResponseDto<?> signup(SignupRequestDto requestDto) {
@@ -98,6 +104,21 @@ public class UserService {
         }
 
         return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
+    }
+
+    public ResponseDto<?> editProfile(UserDetailsImpl userDetails,
+                                      MultipartFile imageFile,
+                                      ProfileEditRequestDto requestDto) throws IOException {
+        User loginUser = userDetails.getUser();
+
+        String imageUrl = s3UploadService.s3UploadFile(imageFile,"static/user");
+        loginUser.edit(imageUrl, requestDto);
+
+        return ResponseDto.success(EditProfileResponseDto.builder()
+                                                         .id(loginUser.getId())
+                                                         .profileUrl(loginUser.getProfileUrl())
+                                                         .nickname(loginUser.getNickname())
+                                                         .build());
     }
 
     public ResponseDto<?> nicknameCheck(NicknameCheckDto nicknameCheckDto) {

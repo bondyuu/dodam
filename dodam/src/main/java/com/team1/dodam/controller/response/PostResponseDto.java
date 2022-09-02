@@ -31,6 +31,6 @@ public class PostResponseDto {
         this.postStatus = String.valueOf(post.getPostStatus());
         this.imageUrl = imageUrlList;
         this.nickname = user.getNickname();
-        this.userImageUrl = user.getImageUrl();
+        this.userImageUrl = user.getProfileUrl();
     }
 }

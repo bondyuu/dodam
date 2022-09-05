@@ -1,5 +1,6 @@
 package com.team1.dodam.controller;
 
+import com.team1.dodam.controller.request.CreateRequestDto;
 import com.team1.dodam.controller.request.PostRequestDto;
 import com.team1.dodam.controller.response.ResponseDto;
 import com.team1.dodam.domain.UserDetailsImpl;
@@ -38,5 +39,10 @@ public class PostController {
     public ResponseDto<?> postPick(@PathVariable(name = "postId") Long postId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return postService.postPick(postId, userDetails);
+    }
+
+    @PostMapping("/posting")
+    public ResponseDto<?> post(CreateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return postService.post(requestDto, userDetails);
     }
 }

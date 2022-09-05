@@ -1,6 +1,7 @@
 package com.team1.dodam.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.team1.dodam.controller.request.CreateRequestDto;
 import com.team1.dodam.controller.request.PostRequestDto;
 import com.team1.dodam.shared.PostStatus;
 import lombok.AllArgsConstructor;
@@ -74,6 +75,15 @@ public class Post extends Timestamped {
         this.content = requestDto.getContent();
         this.category = requestDto.getCategory();
         this.postStatus = PostStatus.valueOf(requestDto.getPostStatus());
+    }
+
+
+    public Post(CreateRequestDto createRequestDto, User user) {
+        this.user = user;
+        this.title = createRequestDto.getTitle();
+        this.content = createRequestDto.getContent();
+        this.category = createRequestDto.getCategory();
+        this.postStatus = PostStatus.CREATED;
     }
 
     public void visit() { this.postVisitCount += 1; }

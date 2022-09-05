@@ -12,12 +12,9 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-public class MailDto {
+public class MailRequestDto {
 
     @Email
     private String address;
 
-    private String title;
-
-    private String content;
 }

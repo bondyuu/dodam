@@ -7,6 +7,7 @@ import com.team1.dodam.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,7 @@ public class PostController {
 
     // 게시글 생성
     @ApiOperation(value = "게시글 생성 메소드")
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseDto<?> sharingPosting(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @Valid @RequestPart(value = "requestDto") PostRequestDto requestDto,
                                          @RequestPart(value = "imageFileList", required = false) List<MultipartFile> imageFileList) throws IOException {

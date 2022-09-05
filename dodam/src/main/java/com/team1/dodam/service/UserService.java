@@ -5,10 +5,12 @@ import com.team1.dodam.controller.response.EditProfileResponseDto;
 import com.team1.dodam.controller.response.LoginResponseDto;
 import com.team1.dodam.controller.response.MessageResponseDto;
 import com.team1.dodam.controller.response.ResponseDto;
+import com.team1.dodam.domain.CertificationNumber;
 import com.team1.dodam.domain.User;
 import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.jwt.TokenProvider;
+import com.team1.dodam.repository.CertificationNumberRepository;
 import com.team1.dodam.repository.UserRepository;
 import com.team1.dodam.s3.S3UploadService;
 import com.team1.dodam.shared.Authority;
@@ -27,6 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final CertificationNumberRepository certificationNumberRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -119,6 +122,18 @@ public class UserService {
                                                          .profileUrl(loginUser.getProfileUrl())
                                                          .nickname(loginUser.getNickname())
                                                          .build());
+    }
+
+    public ResponseDto<?> certify(CertificationRequestDto requestDto) {
+
+        CertificationNumber certification = certificationNumberRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow( () -> new IllegalArgumentException("이메일 오류"));
+
+        if (!requestDto.getCertificationNum().equals(certification.getCertificationNumber())) {
+            return ResponseDto.fail(ErrorCode.NUMER_NOT_MATCHED);
+        }
+
+        return ResponseDto.success(MessageResponseDto.builder().msg("인증되었습니다.").build());
     }
 
     public ResponseDto<?> nicknameCheck(NicknameCheckDto nicknameCheckDto) {

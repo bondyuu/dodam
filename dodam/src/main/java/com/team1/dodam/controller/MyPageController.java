@@ -19,4 +19,9 @@ public class MyPageController {
     public ResponseDto<?> getMypage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return myPageService.getMypage(userDetails);
     }
+
+    @GetMapping("/mypage/post")
+    public ResponseDto<?> getMyPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.getMyPost(userDetails);
+    }
 }

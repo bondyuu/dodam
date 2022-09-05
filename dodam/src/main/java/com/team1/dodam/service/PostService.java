@@ -6,9 +6,9 @@ import com.team1.dodam.controller.response.PostResponseDto;
 import com.team1.dodam.domain.*;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.ImageRepository;
+import com.team1.dodam.repository.PostPickRepository;
 import com.team1.dodam.repository.PostRepository;
 import com.team1.dodam.s3.S3UploadService;
-import com.team1.dodam.shared.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class PostService {
     private final S3UploadService s3UploadService;
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
+    private final PostPickRepository postPickRepository;
 
     @Transactional
     public ResponseDto<?> create(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
@@ -61,5 +64,38 @@ public class PostService {
                 .user(loginUser)
                 .imageUrlList(imageList)
                 .build());
+    }
+
+    @Transactional
+    public ResponseDto<?> postPick(Long postId, UserDetailsImpl userDetails) throws IOException {
+
+        AtomicReference<String> message = new AtomicReference<>("게시글 찜하기 실패했습니다.");
+
+        User loginUser = userDetails.getUser();
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+
+        if(loginUser == null) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
+
+        Optional<PostPick> postPickFound = postPickRepository.findByUserAndPost(loginUser, post);
+
+        postPickFound.ifPresentOrElse(
+                postPickVar -> {
+                    post.discountPostPickCount(postPickVar);
+                    post.updatePostPickCount();
+                    postPickRepository.delete(postPickVar);
+                    message.set("게시글 찜하기 취소했습니다.");
+                },
+                () -> {
+                    PostPick postPick = PostPick.builder().build();
+                    postPick.mapToPost(loginUser, post);
+                    post.updatePostPickCount();
+                    postPickRepository.save(postPick);
+                    message.set("게시글 찜하기 성공했습니다.");
+                }
+        );
+
+        return ResponseDto.success(message);
     }
 }

@@ -1,8 +1,7 @@
 package com.team1.dodam.domain;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team1.dodam.controller.request.PostRequestDto;
-import com.team1.dodam.shared.Authority;
 import com.team1.dodam.shared.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +34,12 @@ public class Post extends Timestamped {
     @Enumerated(EnumType.STRING)
     PostStatus postStatus;
 
+    @Column(nullable = false)
+    private int postVisitCount; // 게시글 방문자 수
+
+    @Column(nullable = false)
+    private int postPickCount; // 게시글 찜 수
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_post"))
     private User user;
@@ -45,6 +50,23 @@ public class Post extends Timestamped {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<PostPick> postPickList = new ArrayList<>();
+
+    private Post(User user, String title, String content, String category, PostStatus postStatus, int countPostVisit, int postPickCount) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.postStatus = postStatus;
+        this.postVisitCount = 0;
+        this.postPickCount = 0;
+    }
+
     @Builder
     public Post(PostRequestDto requestDto, User user) {
         this.user = user;
@@ -53,4 +75,21 @@ public class Post extends Timestamped {
         this.category = requestDto.getCategory();
         this.postStatus = PostStatus.valueOf(requestDto.getPostStatus());
     }
+
+    public void visit() { this.postVisitCount += 1; }
+
+    public void mapToPostPick(PostPick postPick) { postPickList.add(postPick); }
+
+    public void update(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.category = requestDto.getCategory();
+        this.postStatus = PostStatus.MODIFIED;
+    }
+
+    public void updatePostPickCount() {
+        this.postPickCount = this.postPickList.size();
+    }
+
+    public void discountPostPickCount(PostPick postPick) { this.postPickList.remove(postPick); }
 }

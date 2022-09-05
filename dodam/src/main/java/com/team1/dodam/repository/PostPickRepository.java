@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface PostPickRepository extends JpaRepository<PostPick,Long> {
     Optional<PostPick> findByUserAndPost(User loginUser, Post post);
+    Long countAllByUser(User user);
 }

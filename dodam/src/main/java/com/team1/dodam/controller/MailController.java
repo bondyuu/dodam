@@ -1,7 +1,7 @@
 package com.team1.dodam.controller;
 
-import com.team1.dodam.controller.request.MailRequestDto;
-import com.team1.dodam.controller.response.ResponseDto;
+import com.team1.dodam.dto.MailDto;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

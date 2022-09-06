@@ -1,10 +1,10 @@
 package com.team1.dodam.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
-import com.team1.dodam.controller.request.ProfileEditRequestDto;
-import com.team1.dodam.shared.Authority;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.team1.dodam.dto.request.ProfileEditRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class User extends Timestamped {
 
     @Column(nullable = false)
     private String email;
-    
+
 
     @Column(nullable = false)
     private String nickname;
@@ -47,11 +46,15 @@ public class User extends Timestamped {
     @Column
     private String profileUrl;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)

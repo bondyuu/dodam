@@ -1,10 +1,10 @@
 package com.team1.dodam.jwt;
 
-import com.team1.dodam.controller.request.TokenDto;
-import com.team1.dodam.controller.response.ResponseDto;
 import com.team1.dodam.domain.RefreshToken;
 import com.team1.dodam.domain.User;
 import com.team1.dodam.domain.UserDetailsImpl;
+import com.team1.dodam.dto.TokenDto;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.RefreshTokenRepository;
 import com.team1.dodam.shared.Authority;

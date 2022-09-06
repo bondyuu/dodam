@@ -1,17 +1,18 @@
-package com.team1.dodam.controller.response;
+package com.team1.dodam.dto.response;
 
-
+import com.team1.dodam.dto.TokenDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Builder
-public class EditProfileResponseDto {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginResponseDto {
     private Long id;
-    private String profileUrl;
     private String nickname;
+    private TokenDto token;
 }

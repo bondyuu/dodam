@@ -1,19 +1,18 @@
 package com.team1.dodam.service;
 
-import com.team1.dodam.controller.request.*;
-import com.team1.dodam.controller.response.EditProfileResponseDto;
-import com.team1.dodam.controller.response.LoginResponseDto;
-import com.team1.dodam.controller.response.MessageResponseDto;
-import com.team1.dodam.controller.response.ResponseDto;
-import com.team1.dodam.domain.CertificationNumber;
+import com.team1.dodam.dto.TokenDto;
+import com.team1.dodam.dto.response.EditProfileResponseDto;
+import com.team1.dodam.dto.response.LoginResponseDto;
+import com.team1.dodam.dto.response.MessageResponseDto;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.domain.User;
 import com.team1.dodam.domain.UserDetailsImpl;
+import com.team1.dodam.dto.request.*;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.jwt.TokenProvider;
 import com.team1.dodam.repository.CertificationNumberRepository;
 import com.team1.dodam.repository.UserRepository;
 import com.team1.dodam.s3.S3UploadService;
-import com.team1.dodam.shared.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,11 +52,12 @@ public class UserService {
 
 
         User user = User.builder()
-                .email(requestDto.getEmail())
-                .nickname(requestDto.getNickname())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
-                .location(requestDto.getLocation())
-                .build();
+                        .email(requestDto.getEmail())
+                        .nickname(requestDto.getNickname())
+                        .password(passwordEncoder.encode(requestDto.getPassword()))
+                        .location(requestDto.getLocation())
+                        .profileUrl("")
+                        .build();
 
         userRepository.save(user);
 
@@ -81,10 +81,10 @@ public class UserService {
 
         return ResponseDto.success(
                 LoginResponseDto.builder()
-                        .id(user.getId())
-                        .nickname(user.getNickname())
-                        .token(tokenDto)
-                        .build());
+                                .id(user.getId())
+                                .nickname(user.getNickname())
+                                .token(tokenDto)
+                                .build());
     }
 
     public ResponseDto<?> logout(HttpServletRequest request) {

@@ -1,8 +1,10 @@
 package com.team1.dodam.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.team1.dodam.controller.request.CreateRequestDto;
-import com.team1.dodam.controller.request.PostRequestDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.team1.dodam.dto.request.PostRequestDto;
+import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +31,8 @@ public class Post extends Timestamped {
     private String content;
 
     @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    Category category;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,24 +44,29 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private int postPickCount; // 게시글 찜 수
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_post"))
     private User user;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "post",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "post",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<PostPick> postPickList = new ArrayList<>();
 
-    private Post(User user, String title, String content, String category, PostStatus postStatus, int countPostVisit, int postPickCount) {
+    private Post(User user, String title, String content, Category category, PostStatus postStatus, int countPostVisit, int postPickCount) {
         this.user = user;
         this.title = title;
         this.content = content;
@@ -73,8 +81,8 @@ public class Post extends Timestamped {
         this.user = user;
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.category = requestDto.getCategory();
-        this.postStatus = PostStatus.valueOf(requestDto.getPostStatus());
+        this.category = Category.valueOf(requestDto.getCategory());
+        this.postStatus = PostStatus.ACTIVATED;
     }
 
 
@@ -89,12 +97,13 @@ public class Post extends Timestamped {
     public void visit() { this.postVisitCount += 1; }
 
     public void mapToPostPick(PostPick postPick) { postPickList.add(postPick); }
+    public void mapToImage(Image image) { imageList.add(image); }
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.category = requestDto.getCategory();
-        this.postStatus = PostStatus.MODIFIED;
+        this.category = Category.valueOf(requestDto.getCategory());
+//        this.postStatus = PostStatus.ACTIVATED;
     }
 
     public void updatePostPickCount() {

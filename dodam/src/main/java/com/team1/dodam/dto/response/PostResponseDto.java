@@ -1,4 +1,4 @@
-package com.team1.dodam.controller.response;
+package com.team1.dodam.dto.response;
 
 import com.team1.dodam.domain.Post;
 import com.team1.dodam.domain.User;
@@ -18,6 +18,8 @@ public class PostResponseDto {
     private String content;
     private String category;
     private String postStatus;
+    private int postVisitCount;
+    private int postPickCount;
     private List<String> imageUrl;
     private String nickname;
     private String userImageUrl;
@@ -27,8 +29,10 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.category = post.getCategory();
+        this.category = String.valueOf(post.getCategory());
         this.postStatus = String.valueOf(post.getPostStatus());
+        this.postVisitCount = post.getPostVisitCount();
+        this.postPickCount = post.getPostPickCount();
         this.imageUrl = imageUrlList;
         this.nickname = user.getNickname();
         this.userImageUrl = user.getProfileUrl();

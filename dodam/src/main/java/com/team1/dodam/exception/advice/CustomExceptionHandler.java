@@ -1,6 +1,6 @@
 package com.team1.dodam.exception.advice;
 
-import com.team1.dodam.controller.response.ResponseDto;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.exception.BusinessException;
 import com.team1.dodam.global.error.ErrorCode;
 import org.springframework.http.HttpStatus;

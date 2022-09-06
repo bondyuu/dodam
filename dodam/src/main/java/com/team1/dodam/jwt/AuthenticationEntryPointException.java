@@ -1,7 +1,7 @@
 package com.team1.dodam.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team1.dodam.controller.response.ResponseDto;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.global.error.ErrorCode;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

@@ -1,8 +1,8 @@
 package com.team1.dodam.controller;
 
-import com.team1.dodam.controller.request.*;
-import com.team1.dodam.controller.response.ResponseDto;
 import com.team1.dodam.domain.UserDetailsImpl;
+import com.team1.dodam.dto.request.*;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,7 +55,7 @@ public class UserController {
     @PutMapping
     public ResponseDto<?> editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestPart(value = "imageFile", required = false)MultipartFile imageFile,
-                                      @RequestPart(value = "nickname")ProfileEditRequestDto requestDto) throws IOException {
+                                      @RequestPart(value = "nickname") ProfileEditRequestDto requestDto) throws IOException {
         return userService.editProfile(userDetails, imageFile, requestDto);
     }
 }

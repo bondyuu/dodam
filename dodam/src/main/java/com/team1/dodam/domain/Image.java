@@ -1,5 +1,7 @@
 package com.team1.dodam.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,10 +23,14 @@ public class Image extends Timestamped{
     @Column
     private String imageUrl;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_image"))
     private User user;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_post_image"))
     private Post post;

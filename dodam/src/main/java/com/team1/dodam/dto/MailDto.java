@@ -1,4 +1,4 @@
-package com.team1.dodam.controller.request;
+package com.team1.dodam.dto;
 
 
 import lombok.AllArgsConstructor;

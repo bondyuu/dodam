@@ -1,6 +1,6 @@
 package com.team1.dodam.controller;
 
-import com.team1.dodam.dto.MailDto;
+import com.team1.dodam.dto.request.MailRequestDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.service.EmailService;
 import lombok.RequiredArgsConstructor;

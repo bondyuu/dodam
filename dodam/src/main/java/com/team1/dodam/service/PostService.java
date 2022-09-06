@@ -1,5 +1,6 @@
 package com.team1.dodam.service;
 
+import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.PostDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.ResponseDto;
@@ -13,7 +14,6 @@ import com.team1.dodam.s3.S3UploadService;
 import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;

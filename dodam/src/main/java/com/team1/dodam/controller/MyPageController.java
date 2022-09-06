@@ -1,8 +1,8 @@
 package com.team1.dodam.controller;
 
 
-import com.team1.dodam.controller.response.ResponseDto;
 import com.team1.dodam.domain.UserDetailsImpl;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

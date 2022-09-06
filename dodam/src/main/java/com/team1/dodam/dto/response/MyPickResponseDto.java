@@ -1,4 +1,4 @@
-package com.team1.dodam.controller.response;
+package com.team1.dodam.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

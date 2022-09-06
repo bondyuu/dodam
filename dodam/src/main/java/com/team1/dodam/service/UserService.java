@@ -1,5 +1,6 @@
 package com.team1.dodam.service;
 
+import com.team1.dodam.domain.CertificationNumber;
 import com.team1.dodam.dto.TokenDto;
 import com.team1.dodam.dto.response.EditProfileResponseDto;
 import com.team1.dodam.dto.response.LoginResponseDto;

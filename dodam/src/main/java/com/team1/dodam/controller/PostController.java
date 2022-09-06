@@ -1,5 +1,6 @@
 package com.team1.dodam.controller;
 
+import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.PostSearchResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
@@ -8,7 +9,6 @@ import com.team1.dodam.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;

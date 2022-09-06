@@ -1,10 +1,10 @@
 package com.team1.dodam.service;
 
 
-import com.team1.dodam.controller.response.MyPageResponseDto;
-import com.team1.dodam.controller.response.MyPickResponseDto;
-import com.team1.dodam.controller.response.MyPostResponseDto;
-import com.team1.dodam.controller.response.ResponseDto;
+import com.team1.dodam.dto.response.MyPageResponseDto;
+import com.team1.dodam.dto.response.MyPickResponseDto;
+import com.team1.dodam.dto.response.MyPostResponseDto;
+import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.domain.Post;
 import com.team1.dodam.domain.PostPick;
 import com.team1.dodam.domain.User;
@@ -12,6 +12,7 @@ import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.repository.ImageRepository;
 import com.team1.dodam.repository.PostPickRepository;
 import com.team1.dodam.repository.PostRepository;
+import com.team1.dodam.shared.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class MyPageService {
                                                                                     .imageUrl(imageRepository.findAllByPost(post).get(0).getImageUrl())
                                                                                     .location(post.getUser().getLocation())
                                                                                     .title(post.getTitle())
-                                                                                    .category(post.getCategory())
+                                                                                    .category(String.valueOf(post.getCategory()))
                                                                                     .createdAt(post.getCreatedAt())
                                                                                     .build())
                                                       .collect(Collectors.toList());
@@ -76,7 +77,7 @@ public class MyPageService {
                         .imageUrl(imageRepository.findAllByPost(post).get(0).getImageUrl())
                         .location(post.getUser().getLocation())
                         .title(post.getTitle())
-                        .category(post.getCategory())
+                        .category(String.valueOf(post.getCategory()))
                         .createdAt(post.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());

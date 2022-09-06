@@ -1,6 +1,10 @@
 package com.team1.dodam.service;
 
+import com.team1.dodam.domain.CertificationNumber;
 import com.team1.dodam.dto.MailDto;
+import com.team1.dodam.dto.request.MailRequestDto;
+import com.team1.dodam.dto.response.ResponseDto;
+import com.team1.dodam.repository.CertificationNumberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

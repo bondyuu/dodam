@@ -2,6 +2,7 @@ package com.team1.dodam.service;
 
 
 import com.team1.dodam.controller.response.MyPageResponseDto;
+import com.team1.dodam.controller.response.MyPickResponseDto;
 import com.team1.dodam.controller.response.MyPostResponseDto;
 import com.team1.dodam.controller.response.ResponseDto;
 import com.team1.dodam.domain.Post;
@@ -13,7 +14,9 @@ import com.team1.dodam.repository.PostPickRepository;
 import com.team1.dodam.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +59,27 @@ public class MyPageService {
                                                                                     .createdAt(post.getCreatedAt())
                                                                                     .build())
                                                       .collect(Collectors.toList());
+        return ResponseDto.success(postDtoList);
+    }
+
+    @Transactional
+    public ResponseDto<?> getMyPick(UserDetailsImpl userDetails) {
+        User loginUser = userDetails.getUser();
+        List<PostPick> postPickList = postPickRepository.findAllByUser(loginUser);
+
+        List<Post> postList = new ArrayList<>();
+        for (PostPick pick : postPickList) {
+            postList.add(pick.getPost());
+        }
+        List<MyPickResponseDto> postDtoList = postList.stream()
+                .map(post -> MyPickResponseDto.builder()
+                        .imageUrl(imageRepository.findAllByPost(post).get(0).getImageUrl())
+                        .location(post.getUser().getLocation())
+                        .title(post.getTitle())
+                        .category(post.getCategory())
+                        .createdAt(post.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
         return ResponseDto.success(postDtoList);
     }
 }

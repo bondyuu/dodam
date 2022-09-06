@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,10 +44,10 @@ public class PostController {
 
     // 게시글 생성
     @ApiOperation(value = "게시글 생성 메소드")
-    @PostMapping
-    public ResponseDto<?> createPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @Valid @RequestPart(value = "requestDto") PostRequestDto requestDto,
-                                      @RequestPart(value = "imageFileList", required = false) List<MultipartFile> imageFileList) throws IOException {
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseDto<?> sharingPosting(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                         @Valid @RequestPart(value = "requestDto") PostRequestDto requestDto,
+                                         @RequestPart(value = "imageFileList", required = false) List<MultipartFile> imageFileList) throws IOException {
         return postService.create(userDetails, requestDto, imageFileList);
     }
 
@@ -65,5 +66,10 @@ public class PostController {
     public ResponseDto<?> postPick(@PathVariable(name = "postId") Long postId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return postService.postPick(postId, userDetails);
+    }
+
+    @PostMapping("/posting")
+    public ResponseDto<?> post(CreateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return postService.post(requestDto, userDetails);
     }
 }

@@ -85,6 +85,15 @@ public class Post extends Timestamped {
         this.postStatus = PostStatus.ACTIVATED;
     }
 
+
+    public Post(CreateRequestDto createRequestDto, User user) {
+        this.user = user;
+        this.title = createRequestDto.getTitle();
+        this.content = createRequestDto.getContent();
+        this.category = createRequestDto.getCategory();
+        this.postStatus = PostStatus.CREATED;
+    }
+
     public void visit() { this.postVisitCount += 1; }
 
     public void mapToPostPick(PostPick postPick) { postPickList.add(postPick); }

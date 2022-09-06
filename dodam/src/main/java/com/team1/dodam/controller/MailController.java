@@ -15,8 +15,7 @@ public class MailController {
     private final EmailService emailService;
 
     @PostMapping("/mail/send")
-    public ResponseDto<?> sendMail(@RequestBody MailDto mailDto) {
-        emailService.send(mailDto);
-        return ResponseDto.success("Adsf");
+    public ResponseDto<?> sendMail(@RequestBody MailRequestDto requestDto) {
+        return emailService.send(requestDto);
     }
 }

@@ -58,4 +58,10 @@ public class UserController {
                                       @RequestPart(value = "nickname") ProfileEditRequestDto requestDto) throws IOException {
         return userService.editProfile(userDetails, imageFile, requestDto);
     }
+
+    @ApiOperation(value = "이메일 인증 메소드")
+    @PostMapping("/certification")
+    public ResponseDto<?> certifyEmail(@RequestBody CertificationRequestDto requestDto) {
+        return userService.certify(requestDto);
+    }
 }

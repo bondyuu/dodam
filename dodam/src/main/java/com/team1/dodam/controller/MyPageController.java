@@ -20,8 +20,13 @@ public class MyPageController {
         return myPageService.getMypage(userDetails);
     }
 
-    @GetMapping("/mypage/post")
+    @GetMapping("/mypage/posts")
     public ResponseDto<?> getMyPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return myPageService.getMyPost(userDetails);
+    }
+
+    @GetMapping("/mypage/picks")
+    public ResponseDto<?> getMyPick(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.getMyPick(userDetails);
     }
 }

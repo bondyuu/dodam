@@ -59,19 +59,14 @@ public class PostService {
             case GAME: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.GAME, PostStatus.ACTIVATED, pageable).map(PostDto::from);
             case BOOK: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.BOOK, PostStatus.ACTIVATED, pageable).map(PostDto::from);
             case TICKET: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.TICKET, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            default: break;
         }
 
         return postRepository.findAllByPostStatus(PostStatus.ACTIVATED, pageable).map(PostDto::from);
     }
 
-    public ResponseDto<?> create(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
+    public ResponseDto<?> createPosts(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
 
         User loginUser = userDetails.getUser();
-
-//        if (loginUser.getAuthority() != Authority.ROLE_GIVE) {
-//            return ResponseDto.fail(ErrorCode.NOT_VALID_AUTHOTIRY);
-//        }
 
         Post post = postRepository.save(Post.builder()
                 .user(loginUser)
@@ -119,7 +114,20 @@ public class PostService {
                                                   .build());
     }
 
-    public ResponseDto<?> postPick(Long postId, UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<?> readDetailPosts(Long postId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+
+        return ResponseDto.success(PostResponseDto.builder()
+                                                  .post(post)
+                                                  .user(post.getUser())
+                                                  .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
+                                                  .build());
+    }
+
+    @Transactional
+    public ResponseDto<?> pickPosts(Long postId, UserDetailsImpl userDetails) {
 
         AtomicReference<String> message = new AtomicReference<>("게시글 찜하기 실패했습니다.");
 
@@ -152,8 +160,9 @@ public class PostService {
     }
 
     public ResponseDto<?> post(CreateRequestDto requestDto, UserDetailsImpl userDetails) throws IOException {
+
         User loginUser = userDetails.getUser();
-        System.out.println(requestDto);
+
         Post post = postRepository.save(new Post(requestDto, loginUser));
 
         if (requestDto.getImageFileList().size() > 5) {
@@ -178,6 +187,6 @@ public class PostService {
                 .user(loginUser)
                 .imageUrlList(imageList)
                 .build());
-
     }
+
 }

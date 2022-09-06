@@ -31,28 +31,30 @@ public class PostController {
 
     // 게시글 전체 조회 및 검색
     // 검색어, 카테고리에 해당하는 게시글을 생성시간 기준 역순으로 조회
-    @ApiOperation(value = "게시글 전체 조회 및 검색")
+    @ApiOperation(value = "게시글 전체 조회 및 검색 메소드")
     @GetMapping
     public ResponseDto<?> searchPosts(@RequestParam(required = false) String searchValue,
                                       @RequestParam(required = false) String category,
                                       @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Slice<PostSearchResponseDto> posts = postService.searchPosts(searchValue, category, pageable).map(PostSearchResponseDto::from);
-//        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), posts.getTotalPages());
-
         return ResponseDto.success(posts);
     }
 
     // 게시글 생성
     @ApiOperation(value = "게시글 생성 메소드")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseDto<?> sharingPosting(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                         @Valid @RequestPart(value = "requestDto") PostRequestDto requestDto,
-                                         @RequestPart(value = "imageFileList", required = false) List<MultipartFile> imageFileList) throws IOException {
-        return postService.create(userDetails, requestDto, imageFileList);
+    public ResponseDto<?> createPosts(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                      @Valid @RequestPart(value = "requestDto") PostRequestDto requestDto,
+                                      @RequestPart(value = "imageFileList", required = false) List<MultipartFile> imageFileList) throws IOException {
+        return postService.createPosts(userDetails, requestDto, imageFileList);
     }
 
     //게시글 상세 조회
-
+    @ApiOperation(value = "게시글 상세 조회 메소드")
+    @GetMapping("/{postId}")
+    public ResponseDto<?> readDetailPosts(@PathVariable (name = "postId") Long postId) {
+        return postService.readDetailPosts(postId);
+    }
 
     //게시글 수정
 
@@ -63,9 +65,9 @@ public class PostController {
     // 게시글 찜하기
     @ApiOperation(value = "게시글 찜하기 메소드")
     @PostMapping("/{postId}/pick")
-    public ResponseDto<?> postPick(@PathVariable(name = "postId") Long postId,
-                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return postService.postPick(postId, userDetails);
+    public ResponseDto<?> pickPosts(@PathVariable(name = "postId") Long postId,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.pickPosts(postId, userDetails);
     }
 
     @PostMapping("/posting")

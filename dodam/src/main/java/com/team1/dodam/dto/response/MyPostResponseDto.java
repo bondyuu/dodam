@@ -18,5 +18,5 @@ public class MyPostResponseDto {
     private String title;
     private String location;
     private String category;
-    private LocalDateTime createdAt;
+    private String createdAt;
 }

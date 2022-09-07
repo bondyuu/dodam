@@ -12,7 +12,6 @@ import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.repository.ImageRepository;
 import com.team1.dodam.repository.PostPickRepository;
 import com.team1.dodam.repository.PostRepository;
-import com.team1.dodam.shared.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

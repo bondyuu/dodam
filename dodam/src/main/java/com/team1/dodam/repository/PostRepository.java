@@ -5,7 +5,6 @@ import com.team1.dodam.domain.Post;
 import com.team1.dodam.domain.QPost;
 import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import com.team1.dodam.domain.User;
@@ -15,6 +14,7 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>,
                                         QuerydslPredicateExecutor<Post>,

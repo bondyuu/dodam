@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -23,6 +24,8 @@ public class PostResponseDto {
     private List<String> imageUrl;
     private String nickname;
     private String userImageUrl;
+    private String userLocation;
+    private LocalDateTime createdAt;
 
     @Builder
     public PostResponseDto(Post post, User user, List<String> imageUrlList) {
@@ -36,5 +39,7 @@ public class PostResponseDto {
         this.imageUrl = imageUrlList;
         this.nickname = user.getNickname();
         this.userImageUrl = user.getProfileUrl();
+        this.userLocation = user.getLocation();
+        this.createdAt = post.getCreatedAt();
     }
 }

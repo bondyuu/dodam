@@ -1,6 +1,7 @@
 package com.team1.dodam.service;
 
 import com.team1.dodam.dto.PostDto;
+import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.dto.response.PostResponseDto;
@@ -62,6 +63,7 @@ public class PostService {
         return postRepository.findAllByPostStatus(PostStatus.ACTIVATED, pageable).map(PostDto::from);
     }
 
+    @Transactional
     public ResponseDto<?> createPosts(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
 
         User loginUser = userDetails.getUser();
@@ -111,7 +113,8 @@ public class PostService {
                                                   .imageUrlList(imageList)
                                                   .build());
     }
-    
+
+    @Transactional
     public ResponseDto<?> readDetailPosts(Long postId) {
 
         Post post = postRepository.findById(postId)
@@ -123,7 +126,6 @@ public class PostService {
                                                   .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
                                                   .build());
     }
-
 
     @Transactional
     public ResponseDto<?> alterPostStatusToDelete(Long postId, UserDetailsImpl userDetails) {
@@ -145,8 +147,10 @@ public class PostService {
                                                   .build());
     }
 
+    @Transactional
     public void deletePosts(Long postId) { postRepository.deleteById(postId); }
 
+    @Transactional
     public ResponseDto<?> pickPosts(Long postId, UserDetailsImpl userDetails) {
 
         AtomicReference<String> message = new AtomicReference<>("게시글 찜하기 실패했습니다.");
@@ -178,7 +182,8 @@ public class PostService {
 
         return ResponseDto.success(message);
     }
-    
+
+    @Transactional
     public ResponseDto<?> post(CreateRequestDto requestDto, UserDetailsImpl userDetails) throws IOException {
         User loginUser = userDetails.getUser();
         System.out.println(requestDto);

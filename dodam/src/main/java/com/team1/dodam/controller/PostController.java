@@ -1,6 +1,5 @@
 package com.team1.dodam.controller;
 
-import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.PostSearchResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
@@ -68,8 +67,4 @@ public class PostController {
         return postService.postPick(postId, userDetails);
     }
 
-    @PostMapping("/posting")
-    public ResponseDto<?> post(CreateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return postService.post(requestDto, userDetails);
-    }
 }

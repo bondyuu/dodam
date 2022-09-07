@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -68,10 +67,6 @@ public class PostService {
     public ResponseDto<?> create(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
 
         User loginUser = userDetails.getUser();
-
-//        if (loginUser.getAuthority() != Authority.ROLE_GIVE) {
-//            return ResponseDto.fail(ErrorCode.NOT_VALID_AUTHOTIRY);
-//        }
 
         Post post = postRepository.save(Post.builder()
                 .user(loginUser)
@@ -119,6 +114,29 @@ public class PostService {
                                                   .build());
     }
 
+    @Transactional
+    public ResponseDto<?> alterPostStatusToDelete(Long postId, UserDetailsImpl userDetails) {
+
+        User loginUser = userDetails.getUser();
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+
+        if(!loginUser.equals(userDetails.getUser())) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
+
+        post.updatePostStatusToDeleted();
+
+        return ResponseDto.success(PostResponseDto.builder()
+                                                  .post(post)
+                                                  .user(post.getUser())
+                                                  .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
+                                                  .build());
+    }
+
+    @Transactional
+    public void deletePosts(Long postId) { postRepository.deleteById(postId); }
+
+    @Transactional
     public ResponseDto<?> postPick(Long postId, UserDetailsImpl userDetails) throws IOException {
 
         AtomicReference<String> message = new AtomicReference<>("게시글 찜하기 실패했습니다.");
@@ -178,6 +196,5 @@ public class PostService {
                 .user(loginUser)
                 .imageUrlList(imageList)
                 .build());
-
     }
 }

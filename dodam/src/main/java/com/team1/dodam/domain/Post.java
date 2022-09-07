@@ -104,12 +104,11 @@ public class Post extends Timestamped {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.category = Category.valueOf(requestDto.getCategory());
-//        this.postStatus = PostStatus.ACTIVATED;
     }
 
-    public void updatePostPickCount() {
-        this.postPickCount = this.postPickList.size();
-    }
+    public void updatePostPickCount() { this.postPickCount = this.postPickList.size(); }
 
     public void discountPostPickCount(PostPick postPick) { this.postPickList.remove(postPick); }
+
+    public void updatePostStatusToDeleted() { this.postStatus = PostStatus.DELETED; }
 }

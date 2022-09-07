@@ -5,7 +5,6 @@ import com.team1.dodam.domain.Post;
 import com.team1.dodam.domain.QPost;
 import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import com.team1.dodam.domain.User;
@@ -36,4 +35,6 @@ public interface PostRepository extends JpaRepository<Post, Long>,
     Long countAllByUser(User user);
     
     List<Post> findAllByUser(User user);
+
+    List<Post> findAllByPostStatus(PostStatus deleted);
 }

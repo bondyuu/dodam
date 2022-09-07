@@ -58,7 +58,12 @@ public class PostController {
 
 
     //게시글 삭제
-
+    @ApiOperation(value = "게시글 삭제 메소드")
+    @DeleteMapping("/{postId}")
+    public ResponseDto<?> alterPostStatusToDelete(@PathVariable (name = "postId") Long postId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.alterPostStatusToDelete(postId, userDetails);
+    }
 
     // 게시글 찜하기
     @ApiOperation(value = "게시글 찜하기 메소드")

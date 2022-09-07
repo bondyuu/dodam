@@ -1,6 +1,5 @@
 package com.team1.dodam.service;
 
-import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.PostDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.ResponseDto;
@@ -159,34 +158,5 @@ public class PostService {
         return ResponseDto.success(message);
     }
 
-    public ResponseDto<?> post(CreateRequestDto requestDto, UserDetailsImpl userDetails) throws IOException {
-
-        User loginUser = userDetails.getUser();
-
-        Post post = postRepository.save(new Post(requestDto, loginUser));
-
-        if (requestDto.getImageFileList().size() > 5) {
-            return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
-        }
-
-        List<String> imageList = new ArrayList<>();
-
-        if (!requestDto.getImageFileList().get(0).getResource().getFilename().equals("")) {
-            for (MultipartFile imageFile : requestDto.getImageFileList()) {
-                Image image = imageRepository.save(Image.builder()
-                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post"))
-                        .user(loginUser)
-                        .post(post)
-                        .build());
-                imageList.add(image.getImageUrl());
-            }
-        }
-
-        return ResponseDto.success(PostResponseDto.builder()
-                .post(post)
-                .user(loginUser)
-                .imageUrlList(imageList)
-                .build());
-    }
 
 }

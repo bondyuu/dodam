@@ -3,7 +3,6 @@ package com.team1.dodam.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;

@@ -36,4 +36,6 @@ public interface PostRepository extends JpaRepository<Post, Long>,
     Long countAllByUser(User user);
     
     List<Post> findAllByUser(User user);
+
+    List<Post> findAllByPostStatus(PostStatus deleted);
 }

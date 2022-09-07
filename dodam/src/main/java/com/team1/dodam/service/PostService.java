@@ -1,6 +1,7 @@
 package com.team1.dodam.service;
 
 import com.team1.dodam.dto.PostDto;
+import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.dto.response.PostResponseDto;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -63,6 +63,7 @@ public class PostService {
         return postRepository.findAllByPostStatus(PostStatus.ACTIVATED, pageable).map(PostDto::from);
     }
 
+    @Transactional
     public ResponseDto<?> createPosts(UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
 
         User loginUser = userDetails.getUser();
@@ -113,6 +114,7 @@ public class PostService {
                                                   .build());
     }
 
+    @Transactional
     public ResponseDto<?> readDetailPosts(Long postId) {
 
         Post post = postRepository.findById(postId)
@@ -124,6 +126,29 @@ public class PostService {
                                                   .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
                                                   .build());
     }
+
+    @Transactional
+    public ResponseDto<?> alterPostStatusToDelete(Long postId, UserDetailsImpl userDetails) {
+
+        User loginUser = userDetails.getUser();
+    
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+
+        if(!loginUser.equals(userDetails.getUser())) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
+
+        post.updatePostStatusToDeleted();
+        
+        return ResponseDto.success(PostResponseDto.builder()
+                                                  .post(post)
+                                                  .user(post.getUser())
+                                                  .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
+                                                  .build());
+    }
+
+    @Transactional
+    public void deletePosts(Long postId) { postRepository.deleteById(postId); }
 
     @Transactional
     public ResponseDto<?> pickPosts(Long postId, UserDetailsImpl userDetails) {
@@ -158,5 +183,33 @@ public class PostService {
         return ResponseDto.success(message);
     }
 
+    @Transactional
+    public ResponseDto<?> post(CreateRequestDto requestDto, UserDetailsImpl userDetails) throws IOException {
+        User loginUser = userDetails.getUser();
+        System.out.println(requestDto);
+        Post post = postRepository.save(new Post(requestDto, loginUser));
 
+        if (requestDto.getImageFileList().size() > 5) {
+            return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
+        }
+
+        List<String> imageList = new ArrayList<>();
+
+        if (!requestDto.getImageFileList().get(0).getResource().getFilename().equals("")) {
+            for (MultipartFile imageFile : requestDto.getImageFileList()) {
+                Image image = imageRepository.save(Image.builder()
+                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post"))
+                        .user(loginUser)
+                        .post(post)
+                        .build());
+                imageList.add(image.getImageUrl());
+            }
+        }
+
+        return ResponseDto.success(PostResponseDto.builder()
+                .post(post)
+                .user(loginUser)
+                .imageUrlList(imageList)
+                .build());
+    }
 }

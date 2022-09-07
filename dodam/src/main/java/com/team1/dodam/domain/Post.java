@@ -3,6 +3,7 @@ package com.team1.dodam.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;
@@ -85,7 +86,6 @@ public class Post extends Timestamped {
         this.postStatus = PostStatus.ACTIVATED;
     }
 
-
     public Post(CreateRequestDto createRequestDto, User user) {
         this.user = user;
         this.title = createRequestDto.getTitle();
@@ -105,10 +105,9 @@ public class Post extends Timestamped {
         this.category = Category.valueOf(requestDto.getCategory());
     }
 
-    public void updatePostPickCount() {
-        this.postPickCount = this.postPickList.size();
-    }
+    public void updatePostPickCount() { this.postPickCount = this.postPickList.size(); }
 
     public void discountPostPickCount(PostPick postPick) { this.postPickList.remove(postPick); }
 
+    public void updatePostStatusToDeleted() { this.postStatus = PostStatus.DELETED; }
 }

@@ -24,7 +24,7 @@ public class Scheduler {
         List<Post> postList = postRepository.findAllByPostStatus(PostStatus.DELETED);
 
         for(Post post : postList) {
-            LocalDate from = LocalDate.of(post.getCreatedAt().getYear(), post.getCreatedAt().getMonthValue(), post.getCreatedAt().getDayOfMonth());
+            LocalDate from = LocalDate.of(post.getModifiedAt().getYear(), post.getModifiedAt().getMonthValue(), post.getModifiedAt().getDayOfMonth());
             LocalDate to = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
 
             Period period = Period.between(from, to);

@@ -1,7 +1,6 @@
 package com.team1.dodam.service;
 
 import com.team1.dodam.dto.PostDto;
-import com.team1.dodam.dto.request.CreateRequestDto;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.dto.response.PostResponseDto;
@@ -10,10 +9,10 @@ import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.ImageRepository;
 import com.team1.dodam.repository.PostPickRepository;
 import com.team1.dodam.repository.PostRepository;
-import com.team1.dodam.s3.S3UploadService;
 import com.team1.dodam.shared.Category;
 import com.team1.dodam.shared.PostStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -68,6 +68,8 @@ public class PostService {
 
         User loginUser = userDetails.getUser();
 
+        if(loginUser == null) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
+
         Post post = postRepository.save(Post.builder()
                 .user(loginUser)
                 .requestDto(requestDto)
@@ -77,7 +79,7 @@ public class PostService {
 
         if (imageFileList.get(0).getResource().getFilename().equals("")) {
             Image image = imageRepository.save(Image.builder()
-                                                    .imageUrl("https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/static/post/default.png")
+                                                    .imageUrl("https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/default.png")
                                                     .user(loginUser)
                                                     .post(post)
                                                     .build());
@@ -98,7 +100,7 @@ public class PostService {
         if(!imageFileList.get(0).getResource().getFilename().equals("")) {
             for(MultipartFile imageFile: imageFileList) {
                 Image image = imageRepository.save(Image.builder()
-                                                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post"))
+                                                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post/" + loginUser.getNickname() + "/" + post.getId()))
                                                         .user(loginUser)
                                                         .post(post)
                                                         .build());
@@ -119,6 +121,7 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+        post.visit();
 
         return ResponseDto.success(PostResponseDto.builder()
                                                   .post(post)
@@ -128,10 +131,64 @@ public class PostService {
     }
 
     @Transactional
+    public ResponseDto<?> updatePosts(Long postId, UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
+
+        User loginUser = userDetails.getUser();
+
+        if(loginUser == null) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+
+        imageRepository.deleteByPostId(postId);
+        post.update(requestDto);
+
+        List<String> imageList = new ArrayList<>();
+
+        if (imageFileList.get(0).getResource().getFilename().equals("")) {
+            Image image = imageRepository.save(Image.builder()
+                                                    .imageUrl("https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/default.png")
+                                                    .user(loginUser)
+                                                    .post(post)
+                                                    .build());
+            post.mapToImage(image);
+            imageList.add(image.getImageUrl());
+
+            return ResponseDto.success(PostResponseDto.builder()
+                                                      .post(post)
+                                                      .user(loginUser)
+                                                      .imageUrlList(imageList)
+                                                      .build());
+        }
+
+        if (imageFileList.size() > 5) {
+            return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
+        }
+
+        if(!imageFileList.get(0).getResource().getFilename().equals("")) {
+
+            for(MultipartFile imageFile: imageFileList) {
+                Image image = imageRepository.save(Image.builder()
+                                                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post/" + loginUser.getNickname() + "/" + post.getId()))
+                                                        .user(loginUser)
+                                                        .post(post)
+                                                        .build());
+                post.mapToImage(image);
+                imageList.add(image.getImageUrl());
+            }
+        }
+
+        return ResponseDto.success(PostResponseDto.builder()
+                                                  .post(post)
+                                                  .user(loginUser)
+                                                  .imageUrlList(imageList)
+                                                  .build());
+    }
+
+    @Transactional
     public ResponseDto<?> alterPostStatusToDelete(Long postId, UserDetailsImpl userDetails) {
 
         User loginUser = userDetails.getUser();
-    
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
@@ -148,7 +205,12 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePosts(Long postId) { postRepository.deleteById(postId); }
+    public void deletePosts(Long postId, String nickname) {
+
+        postRepository.deleteById(postId);
+        s3UploadService.removeImageFolderInS3("static/post/" + nickname + "/" + postId);
+        log.info("[Scheduler]" + nickname + "님의 id " + postId + "번 게시글의 데이터 삭제 완료.");
+    }
 
     @Transactional
     public ResponseDto<?> pickPosts(Long postId, UserDetailsImpl userDetails) {
@@ -179,37 +241,6 @@ public class PostService {
                     message.set("게시글 찜하기 성공했습니다.");
                 }
         );
-
         return ResponseDto.success(message);
-    }
-
-    @Transactional
-    public ResponseDto<?> post(CreateRequestDto requestDto, UserDetailsImpl userDetails) throws IOException {
-        User loginUser = userDetails.getUser();
-        System.out.println(requestDto);
-        Post post = postRepository.save(new Post(requestDto, loginUser));
-
-        if (requestDto.getImageFileList().size() > 5) {
-            return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
-        }
-
-        List<String> imageList = new ArrayList<>();
-
-        if (!requestDto.getImageFileList().get(0).getResource().getFilename().equals("")) {
-            for (MultipartFile imageFile : requestDto.getImageFileList()) {
-                Image image = imageRepository.save(Image.builder()
-                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post"))
-                        .user(loginUser)
-                        .post(post)
-                        .build());
-                imageList.add(image.getImageUrl());
-            }
-        }
-
-        return ResponseDto.success(PostResponseDto.builder()
-                .post(post)
-                .user(loginUser)
-                .imageUrlList(imageList)
-                .build());
     }
 }

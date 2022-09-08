@@ -1,8 +1,7 @@
-package com.team1.dodam.s3;
+package com.team1.dodam.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,5 +70,16 @@ public class S3UploadService {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    public void removeImageFolderInS3(String folderName){
+        ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request().withBucketName(bucket).withPrefix(folderName+"/");
+        ListObjectsV2Result listObjectsV2Result = amazonS3Client.listObjectsV2(listObjectsV2Request);
+
+        for (S3ObjectSummary objectSummary : listObjectsV2Result.getObjectSummaries()) {
+            DeleteObjectRequest request = new DeleteObjectRequest(bucket, objectSummary.getKey());
+            amazonS3Client.deleteObject(request);
+            log.info("[S3] 이미지 폴더 삭제" + " - 폴더명 " + folderName + " (" + objectSummary.getKey() + ")");
+        }
     }
 }

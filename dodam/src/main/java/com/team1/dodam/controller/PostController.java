@@ -56,7 +56,14 @@ public class PostController {
     }
 
     //게시글 수정
-
+    @ApiOperation(value = "게시글 수정 메소드")
+    @PutMapping(value = "/{postId}")
+    public ResponseDto<?> updatePosts(@PathVariable(name = "postId") Long postId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                      @Valid @RequestPart(value = "requestDto") PostRequestDto requestDto,
+                                      @RequestPart(value = "imageFileList", required = false) List<MultipartFile> imageFileList) throws IOException{
+        return postService.updatePosts(postId, userDetails, requestDto, imageFileList);
+    }
 
     //게시글 삭제
     @ApiOperation(value = "게시글 삭제 메소드")
@@ -73,5 +80,4 @@ public class PostController {
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.pickPosts(postId, userDetails);
     }
-
 }

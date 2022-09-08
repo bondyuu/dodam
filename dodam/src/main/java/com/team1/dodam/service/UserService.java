@@ -13,7 +13,6 @@ import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.jwt.TokenProvider;
 import com.team1.dodam.repository.CertificationNumberRepository;
 import com.team1.dodam.repository.UserRepository;
-import com.team1.dodam.s3.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -110,6 +110,7 @@ public class UserService {
         return ResponseDto.fail(ErrorCode.DUPLICATED_EMAIL);
     }
 
+    @Transactional
     public ResponseDto<?> editProfile(UserDetailsImpl userDetails,
                                       MultipartFile imageFile,
                                       ProfileEditRequestDto requestDto) throws IOException {

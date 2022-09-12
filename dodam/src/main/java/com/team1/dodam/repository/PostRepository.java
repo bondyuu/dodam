@@ -33,9 +33,9 @@ public interface PostRepository extends JpaRepository<Post, Long>,
 
     Slice<Post> findTop6ByTitleContainingAndPostStatus(String searchValue, PostStatus activated, Pageable pageable);
 
-    Long countAllByUser(User user);
+    Long countAllByUserAndPostStatus(User user, PostStatus activated);
     
-    List<Post> findAllByUser(User user);
+    List<Post> findAllByUserAndPostStatus(User user, PostStatus activated);
 
     List<Post> findAllByPostStatus(PostStatus deleted);
 }

@@ -47,7 +47,7 @@ public class PostService {
         if ((searchValue.equals("") || searchValue.isBlank()) && categoryToUse.equals("")) {
             return postRepository.findAllByPostStatus(PostStatus.ACTIVATED, pageable).map(PostDto::from); }
 
-        if (categoryToUse.equals("")) {
+        if (!(searchValue.equals("") || searchValue.isBlank()) || categoryToUse.equals("")) {
             return postRepository.findTop6ByTitleContainingAndPostStatus(searchValue, PostStatus.ACTIVATED, pageable).map(PostDto::from); }
 
         switch (Category.valueOf(categoryToUse)) {

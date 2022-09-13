@@ -2,6 +2,7 @@ package com.team1.dodam.service;
 
 import com.team1.dodam.dto.PostDto;
 import com.team1.dodam.dto.request.PostRequestDto;
+import com.team1.dodam.dto.response.MessageResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.dto.response.PostResponseDto;
 import com.team1.dodam.domain.*;
@@ -197,11 +198,9 @@ public class PostService {
 
         post.updatePostStatusToDeleted();
         
-        return ResponseDto.success(PostResponseDto.builder()
-                                                  .post(post)
-                                                  .user(post.getUser())
-                                                  .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
-                                                  .build());
+        return ResponseDto.success(MessageResponseDto.builder()
+                                                     .msg("게시글의 상태가 DELETED로 변경되었습니다.")
+                                                     .build());
     }
 
     @Transactional

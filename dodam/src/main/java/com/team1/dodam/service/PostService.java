@@ -128,7 +128,7 @@ public class PostService {
         return ResponseDto.success(PostResponseDto.builder()
                                                   .post(post)
                                                   .user(post.getUser())
-                                                  .imageUrlList(post.getImageList().stream().map(image->image.getImageUrl()).collect(Collectors.toList()))
+                                                  .imageUrlList(post.getImageList().stream().map(Image::getImageUrl).collect(Collectors.toList()))
                                                   .build());
     }
 

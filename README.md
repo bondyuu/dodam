@@ -64,10 +64,10 @@ MZ세대 들을 위한 물물교환 플랫폼
 </details>
 
 ### 팀원
-| 이름 | 깃허브 주소 | 연락처 | 
-|--|--|--|
-| 구본주 | https://github.com/bondyuu | 010-4884-4902 |
-| 박상진 | https://github.com/sangjin-park89 | 010-4380-3223 |
-| 이광훈 | https://github.com/lkhun9311 | 010-2880-4839 |
-| 이영훈 | https://github.com/dudgns5845 | 010-5331-6494 |
-| 이장호 | https://github.com/jho951 | 010-4098-3329 |
+| 이름 | 깃허브 주소 | 연락처 | 포지션 |
+|--|--|--|--|
+| 박상진 | https://github.com/sangjin-park89 | 010-4380-3223 | 프론트엔드 |
+| 이영훈 | https://github.com/dudgns5845 | 010-5331-6494 | 프론트엔드 |
+| 이장호 | https://github.com/jho951 | 010-4098-3329 | 프론트엔드 |
+| 구본주 | https://github.com/bondyuu | 010-4884-4902 | 백엔드 |
+| 이광훈 | https://github.com/lkhun9311 | 010-2880-4839 | 백엔드 |

@@ -112,7 +112,9 @@ public class UserService {
     public ResponseDto<?> editProfile(UserDetailsImpl userDetails,
                                       MultipartFile imageFile,
                                       ProfileEditRequestDto requestDto) throws IOException {
-        User loginUser = userDetails.getUser();
+        Long userId = userDetails.getUser().getId();
+        User loginUser = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
         String imageUrl = s3UploadService.s3UploadFile(imageFile,"static/user");
         loginUser.edit(imageUrl, requestDto);

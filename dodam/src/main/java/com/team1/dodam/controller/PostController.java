@@ -67,9 +67,9 @@ public class PostController {
 
     //게시글 삭제
     @ApiOperation(value = "게시글 삭제 메소드")
-    @DeleteMapping("/{postId}")
+    @PutMapping("/{postId}/delete")
     public ResponseDto<?> alterPostStatusToDelete(@PathVariable (name = "postId") Long postId,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.alterPostStatusToDelete(postId, userDetails);
     }
 
@@ -77,7 +77,7 @@ public class PostController {
     @ApiOperation(value = "게시글 찜하기 메소드")
     @PostMapping("/{postId}/pick")
     public ResponseDto<?> pickPosts(@PathVariable(name = "postId") Long postId,
-                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.pickPosts(postId, userDetails);
     }
 }

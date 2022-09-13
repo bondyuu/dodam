@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -127,7 +128,7 @@ public class PostService {
         return ResponseDto.success(PostResponseDto.builder()
                                                   .post(post)
                                                   .user(post.getUser())
-                                                  .imageUrlList(Collections.singletonList(String.valueOf(post.getImageList())))
+                                                  .imageUrlList(post.getImageList().stream().map(image->image.getImageUrl()).collect(Collectors.toList()))
                                                   .build());
     }
 

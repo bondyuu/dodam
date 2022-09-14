@@ -71,6 +71,7 @@ public class SecurityConfiguration {
                 .antMatchers("/profile").permitAll()
                 .antMatchers("/users/signup").permitAll()   //signup, login 해제
                 .antMatchers("/users/login").permitAll()
+                .antMatchers("/users/check/**").permitAll()  //중복확인 해제
                 .antMatchers("/users").permitAll()
                 .antMatchers("/mail/*").permitAll()   //인증 메일 보내기 해제
                 .antMatchers(HttpMethod.POST,"/users/certification").permitAll()

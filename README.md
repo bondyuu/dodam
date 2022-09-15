@@ -1,7 +1,7 @@
 #  Team3 Project
 이노베이션 캠프 동작 3조 프로젝트  
   
-FE GITHUB: https://github.com/dudgns5845/Dodam  
+FE GITHUB: https://github.com/dudgns5845/Final_Project_FE  
 BE GITHUB: https://github.com/bondyuu/dodam
 
 ## 프로젝트 소개
@@ -12,8 +12,6 @@ MZ세대 들을 위한 물물교환 플랫폼
 
 **프로젝트 기간**
 22/08/26 ~ 
-
-**서비스 아키텍쳐**
 
 **기술스택**
 <div align=center>
@@ -34,7 +32,14 @@ MZ세대 들을 위한 물물교환 플랫폼
 
 </div>
 
-
+<details>
+<summary>서비스아키텍쳐</summary>
+<div markdown="1">
+<picture>
+  <img alt="architecture" src="https://user-images.githubusercontent.com/87316155/190352479-bb6a7238-8a61-46f7-9311-3c5e55b67650.jpg">
+</picture>
+</div>
+</details>
 
 <details>
 <summary>ERD</summary>

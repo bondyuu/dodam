@@ -10,6 +10,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
@@ -20,11 +21,15 @@ public class EmailService {
     private final CertificationNumberRepository certificationNumberRepository;
     private JavaMailSender emailSender;
 
+    @Transactional
     public ResponseDto<?> send(MailRequestDto requestDto) {
 
         int certificationNumber = makeRandomNumber();
         String title = "회원가입 인증 메일입니다.";
         String emailFrom = "team3mailsender@gmail.com";
+
+        certificationNumberRepository.deleteByEmail(requestDto.getAddress());
+
 
         CertificationNumber certification = certificationNumberRepository.save(CertificationNumber.builder()
                                                               .email(requestDto.getAddress())
@@ -42,6 +47,6 @@ public class EmailService {
 
     public int makeRandomNumber() {
         Random r = new Random();
-        return r.nextInt(999999);
+        return r.nextInt(899999)+100000;
     }
 }

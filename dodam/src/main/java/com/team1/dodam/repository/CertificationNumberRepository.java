@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface CertificationNumberRepository extends JpaRepository<CertificationNumber, Long> {
 
     Optional<CertificationNumber> findByEmail(String email);
+    void deleteByEmail(String email);
 }

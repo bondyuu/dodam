@@ -119,7 +119,7 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<?> readDetailPosts(Long postId) {
+    public ResponseDto<?> readDetailPosts(Long postId, Long userId) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
@@ -128,6 +128,7 @@ public class PostService {
         return ResponseDto.success(PostResponseDto.builder()
                                                   .post(post)
                                                   .user(post.getUser())
+                                                  .postPicked(postPickRepository.existsByPostIdAndUserId(postId, userId))
                                                   .imageUrlList(post.getImageList().stream().map(Image::getImageUrl).collect(Collectors.toList()))
                                                   .build());
     }
@@ -215,7 +216,7 @@ public class PostService {
     @Transactional
     public ResponseDto<?> pickPosts(Long postId, UserDetailsImpl userDetails) {
 
-        AtomicReference<String> message = new AtomicReference<>("게시글 찜하기 실패했습니다.");
+        AtomicReference<Boolean> postPicked = new AtomicReference<>(false);
 
         User loginUser = userDetails.getUser();
 
@@ -231,16 +232,16 @@ public class PostService {
                     post.discountPostPickCount(postPickVar);
                     post.updatePostPickCount();
                     postPickRepository.delete(postPickVar);
-                    message.set("게시글 찜하기 취소했습니다.");
+                    postPicked.set(false);
                 },
                 () -> {
                     PostPick postPick = PostPick.builder().build();
                     postPick.mapToPost(loginUser, post);
                     post.updatePostPickCount();
                     postPickRepository.save(postPick);
-                    message.set("게시글 찜하기 성공했습니다.");
+                    postPicked.set(true);
                 }
         );
-        return ResponseDto.success(message);
+        return ResponseDto.success(postPicked);
     }
 }

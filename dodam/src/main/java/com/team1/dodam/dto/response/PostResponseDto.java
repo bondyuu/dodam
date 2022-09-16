@@ -21,6 +21,7 @@ public class PostResponseDto {
     private String postStatus;
     private int postVisitCount;
     private int postPickCount;
+    private boolean postPicked;
     private List<String> imageUrl;
     private String nickname;
     private String userImageUrl;
@@ -28,7 +29,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
 
     @Builder
-    public PostResponseDto(Post post, User user, List<String> imageUrlList) {
+    public PostResponseDto(Post post, User user, boolean postPicked, List<String> imageUrlList) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -36,6 +37,7 @@ public class PostResponseDto {
         this.postStatus = String.valueOf(post.getPostStatus());
         this.postVisitCount = post.getPostVisitCount();
         this.postPickCount = post.getPostPickCount();
+        this.postPicked = postPicked;
         this.imageUrl = imageUrlList;
         this.nickname = user.getNickname();
         this.userImageUrl = user.getProfileUrl();

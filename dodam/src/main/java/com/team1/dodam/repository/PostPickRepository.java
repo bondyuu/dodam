@@ -13,4 +13,5 @@ public interface PostPickRepository extends JpaRepository<PostPick,Long> {
     Optional<PostPick> findByUserAndPost(User loginUser, Post post);
     Long countAllByUser(User user);
     List<PostPick> findAllByUser(User user);
+    boolean existsByPostIdAndUserId(Long postId, Long userId);
 }

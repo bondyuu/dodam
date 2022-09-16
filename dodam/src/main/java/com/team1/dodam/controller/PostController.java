@@ -51,8 +51,12 @@ public class PostController {
     //게시글 상세 조회
     @ApiOperation(value = "게시글 상세 조회 메소드")
     @GetMapping("/{postId}")
-    public ResponseDto<?> readDetailPosts(@PathVariable (name = "postId") Long postId) {
-        return postService.readDetailPosts(postId);
+    public ResponseDto<?> readDetailPosts(@PathVariable (name = "postId") Long postId,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = 0L;
+        if (userDetails != null) userId = userDetails.getUser().getId();
+
+        return postService.readDetailPosts(postId, userId);
     }
 
     //게시글 수정

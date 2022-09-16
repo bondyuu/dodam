@@ -37,7 +37,7 @@ public interface PostRepository extends JpaRepository<Post, Long>,
 
     Long countAllByUserAndPostStatus(User user, PostStatus activated);
     
-    List<Post> findAllByUserAndPostStatus(User user, PostStatus activated);
+    Slice<Post> findAllByUserAndPostStatus(User user, PostStatus activated, Pageable pageable);
 
     List<Post> findAllByPostStatus(PostStatus deleted);
 }

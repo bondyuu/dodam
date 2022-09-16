@@ -1,6 +1,7 @@
 package com.team1.dodam.service;
 
 
+import com.team1.dodam.dto.PostDto;
 import com.team1.dodam.dto.response.MyPageResponseDto;
 import com.team1.dodam.dto.response.MyPickResponseDto;
 import com.team1.dodam.dto.response.MyPostResponseDto;
@@ -14,6 +15,7 @@ import com.team1.dodam.repository.PostPickRepository;
 import com.team1.dodam.repository.PostRepository;
 import com.team1.dodam.shared.PostStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,23 +61,25 @@ public class MyPageService {
     }
 
     @Transactional
-    public ResponseDto<?> getMyPost(UserDetailsImpl userDetails) {
+    public ResponseDto<?> getMyPost(UserDetailsImpl userDetails, Pageable pageable) {
 
         User loginUser = userDetails.getUser();
 
-        List<Post> postList = postRepository.findAllByUserAndPostStatus(loginUser, PostStatus.ACTIVATED);
+//        List<Post> postList = postRepository.findAllByUserAndPostStatus(loginUser, PostStatus.ACTIVATED, pageable);
 
         //stream하는 과정을 method로 빼서 코드 가독성 향상할 필요 있어보임
-        List<MyPostResponseDto> postDtoList = postList.stream()
-                                                      .map(post -> MyPostResponseDto.builder()
-                                                                                    .imageUrl(imageRepository.findAllByPost(post).get(0).getImageUrl())
-                                                                                    .location(post.getUser().getLocation())
-                                                                                    .title(post.getTitle())
-                                                                                    .category(String.valueOf(post.getCategory()))
-                                                                                    .createdAt(formatTime(post.getCreatedAt()))
-                                                                                    .build())
-                                                      .collect(Collectors.toList());
-        return ResponseDto.success(postDtoList);
+//        List<MyPostResponseDto> postDtoList = postList.stream()
+//                                                      .map(post -> MyPostResponseDto.builder()
+//                                                                                    .imageUrl(imageRepository.findAllByPost(post).get(0).getImageUrl())
+//                                                                                    .location(post.getUser().getLocation())
+//                                                                                    .title(post.getTitle())
+//                                                                                    .category(String.valueOf(post.getCategory()))
+//                                                                                    .createdAt(formatTime(post.getCreatedAt()))
+//                                                                                    .build())
+//                                                      .collect(Collectors.toList());
+        return ResponseDto.success(postRepository
+                .findAllByUserAndPostStatus(loginUser, PostStatus.ACTIVATED, pageable)
+                .map(post-> MyPostResponseDto.builder().post(post).build()));
     }
 
     @Transactional
@@ -90,14 +94,9 @@ public class MyPageService {
             }
         }
         List<MyPickResponseDto> postDtoList = postList.stream()
-                .map(post -> MyPickResponseDto.builder()
-                        .imageUrl(imageRepository.findAllByPost(post).get(0).getImageUrl())
-                        .location(post.getUser().getLocation())
-                        .title(post.getTitle())
-                        .category(String.valueOf(post.getCategory()))
-                        .createdAt(formatTime(post.getCreatedAt()))
-                        .build())
-                .collect(Collectors.toList());
+                                                      .map(post -> MyPickResponseDto.builder().post(post).build())
+                                                      .collect(Collectors.toList());
+
         return ResponseDto.success(postDtoList);
     }
 
@@ -108,7 +107,7 @@ public class MyPageService {
     private static final int DAY = 30;
     private static final int MONTH = 12;
 
-    private static String formatTime(LocalDateTime time) {
+    public static String formatTime(LocalDateTime time) {
         String message;
 
         long seconds = Duration.between(time, LocalDateTime.now()).getSeconds();

@@ -22,6 +22,10 @@ public class QUser extends EntityPathBase<User> {
 
     public final QTimestamped _super = new QTimestamped(this);
 
+    public final ListPath<ChatRoom, QChatRoom> chatRoomList1 = this.<ChatRoom, QChatRoom>createList("chatRoomList1", ChatRoom.class, QChatRoom.class, PathInits.DIRECT2);
+
+    public final ListPath<ChatRoom, QChatRoom> chatRoomList2 = this.<ChatRoom, QChatRoom>createList("chatRoomList2", ChatRoom.class, QChatRoom.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -32,6 +36,8 @@ public class QUser extends EntityPathBase<User> {
     public final ListPath<Image, QImage> imageList = this.<Image, QImage>createList("imageList", Image.class, QImage.class, PathInits.DIRECT2);
 
     public final StringPath location = createString("location");
+
+    public final ListPath<ChatMessage, QChatMessage> messageList = this.<ChatMessage, QChatMessage>createList("messageList", ChatMessage.class, QChatMessage.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;

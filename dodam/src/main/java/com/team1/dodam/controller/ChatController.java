@@ -53,7 +53,7 @@ public class ChatController {
 //        String nickname = tokenProvider.getUserNameFromJwt(token);
         User user = userDetails.getUser();
         // 로그인 회원 정보로 대화명 설정
-        message.setSender(user);
+        message.setSender(user.getNickname());
 //        // 채팅방 입장시에는 대화명과 메시지를 자동으로 세팅한다.
 //        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
 //            message.setSender("[알림]");
@@ -65,7 +65,7 @@ public class ChatController {
         chatMessageRepository.save(ChatMessage.builder()
                                               .chatRoom(chatRoomRepository.findById(message.getRoomId())
                                                         .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다.")))
-                                              .user(message.getSender())
+                                              .user(user)
                                               .type(message.getType())
                                               .message(message.getMessage())
                                               .createdAt(message.getCreatedAt())

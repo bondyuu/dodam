@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MessageRequestDto {
     private ChatMessage.MessageType type;
-    private User sender;
+    private String sender;
     private String roomId;
     private String message;
     private LocalDateTime createdAt;

@@ -72,7 +72,7 @@ public class ChatRoomService {
         List<ChatMessageDto> messageDtoList = messageList.stream()
                                                          .map(message -> ChatMessageDto.builder()
                                                                                        .type(message.getType())
-                                                                                       .nickname(message.getUser().getNickname())
+                                                                                       .sender(message.getUser().getNickname())
                                                                                        .message(message.getMessage())
                                                                                        .createdAt(message.getCreatedAt())
                                                                                        .build())

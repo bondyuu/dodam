@@ -77,8 +77,7 @@ public class SecurityConfiguration {
                 .antMatchers(HttpMethod.POST,"/users/certification").permitAll()
                 .antMatchers(HttpMethod.GET, "/posts").permitAll()  //게시글 목록 조회 해제
                 .antMatchers(HttpMethod.GET, "/posts/**").permitAll()  //게시글 조회 해제
-                .antMatchers("/ws-stomp").permitAll()
-//                .antMatchers("pu/chat")
+                .antMatchers("/ws-stomp/**").permitAll()
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()

@@ -3,6 +3,7 @@ package com.team1.dodam.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -10,11 +11,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Builder
-public class ChatMessage extends Timestamped {
+public class ChatMessage  {
 
     // 메시지 타입 : 입장, 채팅
     public enum MessageType {
-        ENTER, TALK
+        ENTER, TALK, QUIT
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,5 +34,8 @@ public class ChatMessage extends Timestamped {
 
     @Column
     private String message; // 메시지
+
+    @Column
+    private LocalDateTime createdAt; //생성 시간
 
 }

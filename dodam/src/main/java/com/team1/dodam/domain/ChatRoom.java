@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-public class ChatRoom implements Serializable {
+public class ChatRoom extends Timestamped implements Serializable{
 
     private static final long serialVersionUID = 6494678977089006639L;
     @Id
@@ -41,10 +41,11 @@ public class ChatRoom implements Serializable {
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<ChatMessage> messages;
 
-    public static ChatRoom create(User postUser, User loginUser) {
+    public static ChatRoom create(User postUser, User loginUser, Post post) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.title = postUser.getNickname()+ "과" + loginUser.getNickname() + "의 채팅방";
+        chatRoom.post = post;
         chatRoom.user1 = postUser;
         chatRoom.user2 = loginUser;
         return chatRoom;

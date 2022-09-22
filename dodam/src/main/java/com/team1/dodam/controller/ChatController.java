@@ -63,12 +63,13 @@ public class ChatController {
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 
         chatMessageRepository.save(ChatMessage.builder()
-                .chatRoom(chatRoomRepository.findById(message.getRoomId())
-                        .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다.")))
-                .user(message.getSender())
-                .type(message.getType())
-                .message(message.getMessage())
-                .build());
+                                              .chatRoom(chatRoomRepository.findById(message.getRoomId())
+                                                        .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다.")))
+                                              .user(message.getSender())
+                                              .type(message.getType())
+                                              .message(message.getMessage())
+                                              .createdAt(message.getCreatedAt())
+                                              .build());
     }
 
     @GetMapping("/messages/{roomId}")

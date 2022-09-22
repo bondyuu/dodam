@@ -26,20 +26,21 @@ public class ChatRoomController {
 
     //채팅방 전체조회
     @GetMapping("/rooms")
-    public ResponseDto<?> room() {
-        return ResponseDto.success(chatRoomService.findAllRoom());
+    public ResponseDto<?> room(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(chatRoomService.findAllRoom(userDetails));
     }
 
     //채팅방생성
-    @PostMapping("/room/{authorId}")
-    public ChatRoom createRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long authorId) {
-        return chatRoomService.createChatRoom(userDetails, authorId);
+    @PostMapping("/room/{postId}")
+    public ResponseDto<?> createRoom(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                     @PathVariable Long postId) {
+        return chatRoomService.createChatRoom(userDetails, postId);
     }
 
     //채팅방 상세정보 조회
     @GetMapping("/room/{roomId}")
-    public ChatRoom roomInfo(@PathVariable String roomId) {
-        return chatRoomService.findRoomById(roomId);
+    public ResponseDto<?> roomInfo(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(chatRoomService.findRoomById(roomId, userDetails));
     }
 
 

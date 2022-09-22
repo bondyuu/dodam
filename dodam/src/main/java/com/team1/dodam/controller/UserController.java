@@ -55,7 +55,7 @@ public class UserController {
     @PutMapping
     public ResponseDto<?> editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestPart(value = "imageFile", required = false)MultipartFile imageFile,
-                                      @RequestPart(value = "requestDto") ProfileEditRequestDto requestDto) throws IOException {
+                                      @RequestPart(value = "requestDto", required = false) ProfileEditRequestDto requestDto) throws IOException {
         return userService.editProfile(userDetails, imageFile, requestDto);
     }
 

@@ -60,9 +60,9 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-    public void edit(String imageUrl, ProfileEditRequestDto requestDto) {
+    public void edit(String imageUrl, String nickname) {
         this.profileUrl = imageUrl;
-        this.nickname = requestDto.getNickname();
+        this.nickname = nickname;
     }
     @Override
     public boolean equals(Object o) {

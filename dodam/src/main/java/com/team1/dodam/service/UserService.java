@@ -117,8 +117,25 @@ public class UserService {
         User loginUser = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
-        String imageUrl = s3UploadService.s3UploadFile(imageFile,"static/user");
-        loginUser.edit(imageUrl, requestDto);
+        String imageUrl;
+        if(imageFile==null){
+            imageUrl = loginUser.getProfileUrl();
+        } else{
+            imageUrl = s3UploadService.s3UploadFile(imageFile,"static/user");
+        }
+
+        String nickname;
+        if(requestDto == null){
+            nickname = loginUser.getNickname();
+        } else {
+            User user = isPresentNickname(requestDto.getNickname());
+            if (user != null) {
+                return ResponseDto.fail(ErrorCode.DUPLICATED_NICKNAME);
+            }
+            nickname = requestDto.getNickname();
+        }
+
+        loginUser.edit(imageUrl, nickname);
 
         return ResponseDto.success(EditProfileResponseDto.builder()
                                                          .id(loginUser.getId())

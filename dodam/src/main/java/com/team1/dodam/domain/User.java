@@ -60,6 +60,7 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
+
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
@@ -72,8 +73,9 @@ public class User extends Timestamped {
     private List<ChatRoom> chatRoomList2 = new ArrayList<>();
 
     public void edit(String imageUrl, ProfileEditRequestDto requestDto) {
+
         this.profileUrl = imageUrl;
-        this.nickname = requestDto.getNickname();
+        this.nickname = nickname;
     }
     @Override
     public boolean equals(Object o) {

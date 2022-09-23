@@ -11,7 +11,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.util.Random;
 
 @Service
@@ -21,8 +28,10 @@ public class EmailService {
     private final CertificationNumberRepository certificationNumberRepository;
     private JavaMailSender emailSender;
 
+    private final TemplateEngine templateEngine;
+
     @Transactional
-    public ResponseDto<?> send(MailRequestDto requestDto) {
+    public ResponseDto<?> send(MailRequestDto requestDto) throws MessagingException, IOException {
 
         int certificationNumber = makeRandomNumber();
         String title = "회원가입 인증 메일입니다.";
@@ -36,11 +45,20 @@ public class EmailService {
                                                               .certificationNumber((long)certificationNumber)
                                                               .build());
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(emailFrom);
-        message.setTo(certification.getEmail());
-        message.setSubject(title);
-        message.setText(Long.toString(certification.getCertificationNumber()));
+//        SimpleMailMessage message = new SimpleMailMessage();
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom(emailFrom);
+        helper.setTo(certification.getEmail());
+        helper.setSubject(title);
+        //템플릿에 전달할 데이터 설정
+        Context context = new Context();
+        context.setVariable("num", Long.toString(certification.getCertificationNumber()));
+
+        //메일 내용 설정 : 템플릿 프로세스
+        String html = templateEngine.process("mail", context);
+        helper.setText(html, true);
+
         emailSender.send(message);
         return ResponseDto.success("success");
     }

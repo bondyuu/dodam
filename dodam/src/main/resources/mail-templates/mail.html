@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <style>
+        .header {
+            margin: 30px auto;
+            width: 800px;
+            height: 150px;
+        }
+        .servicename {
+            padding-left: 50px;
+            padding-top: 50px;
+        }
+        .body1 {
+            width: 800px;
+            height: 170px;
+            margin: 20px auto;
+            padding-top: 20px;
+            /*border: 1px solid cadetblue;*/
+            /*box-shadow: 1px 1px 1px 1px rgb(197, 229, 229);*/
+
+        }
+        .body1-content {
+            padding-left: 80px;
+        }
+        .body1-content1 {
+            margin-bottom: 50px;
+        }
+        .body2 {
+            width: 700px;
+            height: 150px;
+            margin-left: 80px;
+            /*border: 1px solid cadetblue;*/
+            /*box-shadow: 1px 1px 1px 1px rgb(197, 229, 229);*/
+        }
+        .body2-content {
+            padding-left: 0px;
+            width: 700px;
+        }
+        .num {
+            padding-left: 30px;
+            padding-top: 150px;
+            padding-bottom: 150px;
+            font-size: 20px;
+        }
+        .container {
+            /*background-color: black;*/
+            width: 850px;
+            margin-left: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header" style="background-color: #b5d46f">
+        <h1 class="servicename">서비스명</h1>
+    </div>
+    <div class="body1">
+        <div class="body1-content">
+            <div class="body1-content1">
+                <h2>계정 가입을 위한 인증번호입니다.<br></h2>
+            </div>
+            <h4>아래 인증번호를 확인하여 이메일 주소 인증을 완료해 주세요.</h4>
+        </div>
+    </div>
+
+    <div class="body2">
+        <div class="body2-content">
+            <hr>
+            <span class="num">인증번호 :  <span th:text="${num}"> </span> </span>
+            <hr>
+        </div>
+    </div>
+</div>
+
+<!--<span th:text="${name}"></span>-->
+<!--<span>님</span>-->
+</body>
+</html>

@@ -60,7 +60,20 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-    public void edit(String imageUrl, String nickname) {
+
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "user",
+            orphanRemoval = true)
+    private List<ChatMessage> messageList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user1")
+    private List<ChatRoom> chatRoomList1 = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user2")
+    private List<ChatRoom> chatRoomList2 = new ArrayList<>();
+
+    public void edit(String imageUrl, ProfileEditRequestDto requestDto) {
+
         this.profileUrl = imageUrl;
         this.nickname = nickname;
     }

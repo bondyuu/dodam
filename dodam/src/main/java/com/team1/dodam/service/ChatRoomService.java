@@ -2,10 +2,7 @@ package com.team1.dodam.service;
 
 import com.team1.dodam.domain.*;
 import com.team1.dodam.dto.ChatMessageDto;
-import com.team1.dodam.dto.response.ChatRoomDetailResponseDto;
-import com.team1.dodam.dto.response.ChatRoomListResponseDto;
-import com.team1.dodam.dto.response.MessageResponseDto;
-import com.team1.dodam.dto.response.ResponseDto;
+import com.team1.dodam.dto.response.*;
 import com.team1.dodam.repository.ChatMessageRepository;
 import com.team1.dodam.repository.ChatRoomRepository;
 import com.team1.dodam.repository.PostRepository;
@@ -94,15 +91,17 @@ public class ChatRoomService {
     @Transactional
     public ResponseDto<?> createChatRoom(UserDetailsImpl userDetails, Long postId) {
         User loginUser = userDetails.getUser();
-//        User postUser = userRepository.findById(authorId).orElseThrow(
-//                () -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
-        ChatRoom chatRoom = ChatRoom.create(loginUser, post.getUser(), post);
-//        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
-        chatRoomRepository.save(chatRoom);
+        ChatRoom chatRoom = chatRoomRepository.findByPostAndUser2(post, loginUser).orElse(null);
 
-        return ResponseDto.success(MessageResponseDto.builder().msg("채팅방 생성 성공").build());
+        if(chatRoom == null) {
+            ChatRoom newRoom = chatRoomRepository.save(ChatRoom.create(post.getUser(), loginUser, post));
+            return ResponseDto.success(ChatRoomResponseDto.builder().msg("INIT").roomId(newRoom.getRoomId()).build());
+        } else{
+            return ResponseDto.success(ChatRoomResponseDto.builder().msg("EXIST").roomId(chatRoom.getRoomId()).build());
+        }
+//        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
     }
 }

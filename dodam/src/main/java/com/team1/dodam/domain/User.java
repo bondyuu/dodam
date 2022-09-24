@@ -72,7 +72,7 @@ public class User extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user2")
     private List<ChatRoom> chatRoomList2 = new ArrayList<>();
 
-    public void edit(String imageUrl, ProfileEditRequestDto requestDto) {
+    public void edit(String imageUrl, String nickname) {
 
         this.profileUrl = imageUrl;
         this.nickname = nickname;

@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +25,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
-public class User extends Timestamped {
+public class User extends Timestamped implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -60,15 +61,20 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
     private List<ChatMessage> messageList = new ArrayList<>();
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user1")
     private List<ChatRoom> chatRoomList1 = new ArrayList<>();
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user2")
     private List<ChatRoom> chatRoomList2 = new ArrayList<>();
 

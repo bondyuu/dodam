@@ -3,18 +3,26 @@ package com.team1.dodam.service;
 import com.team1.dodam.domain.*;
 import com.team1.dodam.dto.ChatMessageDto;
 import com.team1.dodam.dto.response.*;
+import com.team1.dodam.redis.RedisSubscriber;
 import com.team1.dodam.repository.ChatMessageRepository;
 import com.team1.dodam.repository.ChatRoomRepository;
 import com.team1.dodam.repository.PostRepository;
 import com.team1.dodam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -25,6 +33,24 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
+
+
+
+    private final RedisTemplate<String, Object> redisTemplate;
+    private HashOperations<String, String, ChatRoom> opsHashChatRoom;
+    private Map<String, ChannelTopic> topics;
+    private HashOperations<String, String, String> hashOpsEnterInfo;
+
+    @PostConstruct
+    private void init() {
+        opsHashChatRoom = redisTemplate.opsForHash();
+        hashOpsEnterInfo=redisTemplate.opsForHash();
+
+        topics = new HashMap<>();
+    }
+
+
+
 
     // 모든 채팅방 조회
     @Transactional
@@ -96,8 +122,24 @@ public class ChatRoomService {
 
         ChatRoom chatRoom = chatRoomRepository.findByPostAndUser2(post, loginUser).orElse(null);
 
+
+        // 시도1~
+        String chatRoomName = post.getUser().getNickname() + ":" + loginUser.getNickname();
+        // ~시도1
+
+        // 시도3~
+//        ChatRoom newRoom = chatRoomRepository.save(ChatRoom.create(post.getUser(), loginUser, post));
+//        opsHashChatRoom.put(chatRoomName, newRoom.getRoomId(), newRoom);
+//        return ResponseDto.success(ChatRoomResponseDto.builder().msg("INIT").roomId(newRoom.getRoomId()).build());
+//        // ~시도3
+
         if(chatRoom == null) {
             ChatRoom newRoom = chatRoomRepository.save(ChatRoom.create(post.getUser(), loginUser, post));
+
+            // 시도2~
+            opsHashChatRoom.put(chatRoomName, newRoom.getRoomId(), newRoom);
+            // ~시도2
+
             return ResponseDto.success(ChatRoomResponseDto.builder().msg("INIT").roomId(newRoom.getRoomId()).build());
         } else{
             return ResponseDto.success(ChatRoomResponseDto.builder().msg("EXIST").roomId(chatRoom.getRoomId()).build());

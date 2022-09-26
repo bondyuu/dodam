@@ -48,18 +48,18 @@ public class PostService {
             return postRepository.findAllByPostStatus(PostStatus.ACTIVATED, pageable).map(PostDto::from); }
 
         if (categoryToUse.equals("")) {
-            return postRepository.findTop6ByTitleContainingAndPostStatus(searchValue, PostStatus.ACTIVATED, pageable).map(PostDto::from); }
+            return postRepository.findTop11ByTitleContainingAndPostStatus(searchValue, PostStatus.ACTIVATED, pageable).map(PostDto::from); }
 
         switch (Category.valueOf(categoryToUse)) {
-            case DEVICE: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.DEVICE, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case APPLIANCE: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.APPLIANCE, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case KITCHEN: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.KITCHEN, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case WOMEN: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.WOMEN, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case MEN: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.MEN, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case BEAUTY: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.BEAUTY, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case GAME: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.GAME, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case BOOK: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.BOOK, PostStatus.ACTIVATED, pageable).map(PostDto::from);
-            case TICKET: return postRepository.findTop6ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.TICKET, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case DEVICE: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.DEVICE, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case APPLIANCE: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.APPLIANCE, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case KITCHEN: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.KITCHEN, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case WOMEN: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.WOMEN, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case MEN: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.MEN, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case BEAUTY: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.BEAUTY, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case GAME: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.GAME, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case BOOK: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.BOOK, PostStatus.ACTIVATED, pageable).map(PostDto::from);
+            case TICKET: return postRepository.findTop11ByTitleContainingAndCategoryAndPostStatus(searchValue, Category.TICKET, PostStatus.ACTIVATED, pageable).map(PostDto::from);
         }
 
         return postRepository.findAllByPostStatus(PostStatus.ACTIVATED, pageable).map(PostDto::from);

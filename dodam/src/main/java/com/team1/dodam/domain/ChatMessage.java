@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Builder
-public class ChatMessage  {
+public class ChatMessage extends Timestamped {
 
     // 메시지 타입 : 입장, 채팅
     public enum MessageType {
@@ -41,7 +41,5 @@ public class ChatMessage  {
     @Column
     private String message; // 메시지
 
-    @Column
-    private LocalDateTime createdAt; //생성 시간
 
 }

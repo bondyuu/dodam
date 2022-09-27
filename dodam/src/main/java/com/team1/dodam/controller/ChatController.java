@@ -1,5 +1,7 @@
 package com.team1.dodam.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team1.dodam.domain.ChatMessage;
 import com.team1.dodam.domain.ChatRoom;
 import com.team1.dodam.domain.User;
@@ -8,13 +10,17 @@ import com.team1.dodam.dto.request.MessageRequestDto;
 import com.team1.dodam.jwt.TokenProvider;
 import com.team1.dodam.repository.ChatMessageRepository;
 import com.team1.dodam.repository.ChatRoomRepository;
+import com.team1.dodam.repository.UserRepository;
+import io.lettuce.core.output.ScanOutput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +28,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
+
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class ChatController {
 
+    private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     // Redis
@@ -36,10 +47,8 @@ public class ChatController {
     private ListOperations<String, Object> opsListChatMessage;
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, Object> redisTemplate2;
-    private final TokenProvider tokenProvider;
     private final ChannelTopic channelTopic;
-
+    private final SimpMessageSendingOperations messagingTemplate;
     @PostConstruct
     private void init() {
         opsListChatMessage = redisTemplate.opsForList();
@@ -48,17 +57,21 @@ public class ChatController {
     /**
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
      */
-    @MessageMapping("/chat/message")
-    public void message(MessageRequestDto message, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        String nickname = tokenProvider.getUserNameFromJwt(token);
-        User user = userDetails.getUser();
+    @MessageMapping("/chat/message/{roomId}")
+    public void message(MessageRequestDto message, @Header(value = "Authorization") String token,
+                        @DestinationVariable String roomId) throws JsonProcessingException {
+        String[] check = token.split("\\.");
+        Base64.Decoder decoder = Base64.getDecoder();
+        String payload = new String(decoder.decode(check[1]));
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> returnMap = mapper.readValue(payload, Map.class);
+        String email = returnMap.get("sub").toString();
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new IllegalArgumentException("회원정보를 찾을 수 없습니다."));
         // 로그인 회원 정보로 대화명 설정
         message.setSender(user.getNickname());
-//        // 채팅방 입장시에는 대화명과 메시지를 자동으로 세팅한다.
-//        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-//            message.setSender("[알림]");
-//            message.setMessage(nickname + "님이 입장하셨습니다.");
-//        }
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 
@@ -68,7 +81,6 @@ public class ChatController {
                                               .user(user)
                                               .type(message.getType())
                                               .message(message.getMessage())
-                                              .createdAt(message.getCreatedAt())
                                               .build());
     }
 

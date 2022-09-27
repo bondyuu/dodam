@@ -16,6 +16,6 @@ public class MessageRequestDto {
     private String sender;
     private String roomId;
     private String message;
-    private LocalDateTime createdAt;
+
 
 }

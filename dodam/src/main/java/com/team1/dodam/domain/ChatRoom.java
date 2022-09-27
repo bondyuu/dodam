@@ -1,5 +1,8 @@
 package com.team1.dodam.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,20 +23,29 @@ public class ChatRoom extends Timestamped implements Serializable{
     @Column
     private String title;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "chatRoomList")
 //    private List<User> userList = new ArrayList<>();
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user1_id")
     private User user1;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user2_id")
     private User user2;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messageList;
 

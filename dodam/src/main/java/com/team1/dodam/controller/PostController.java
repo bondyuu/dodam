@@ -34,7 +34,7 @@ public class PostController {
     @GetMapping
     public ResponseDto<?> searchPosts(@RequestParam(required = false) String searchValue,
                                       @RequestParam(required = false) String category,
-                                      @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+                                      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Slice<PostSearchResponseDto> posts = postService.searchPosts(searchValue, category, pageable).map(PostSearchResponseDto::from);
         return ResponseDto.success(posts);
     }

@@ -1,5 +1,7 @@
 package com.team1.dodam.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +23,8 @@ public class ChatMessage extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private ChatRoom chatRoom; // 방번호
@@ -28,6 +32,8 @@ public class ChatMessage extends Timestamped {
     @Column
     private MessageType type; // 메시지 타입
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; // 메시지 보낸사람

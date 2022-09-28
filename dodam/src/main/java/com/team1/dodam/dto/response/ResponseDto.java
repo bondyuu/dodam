@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
+
 @Getter
 @AllArgsConstructor
-public class ResponseDto<T> {
+public class ResponseDto<T> implements Serializable {
   private boolean success;
   private T data;
   private ErrorCode errorCode;

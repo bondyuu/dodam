@@ -1,7 +1,5 @@
 package com.team1.dodam.dto.response;
 
-
-import com.team1.dodam.domain.ChatMessage;
 import com.team1.dodam.dto.ChatMessageDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,5 +1,6 @@
 package com.team1.dodam.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -24,7 +25,8 @@ public class ChatMessage  {
     private Long messageId;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonManagedReference
+//    @JsonManagedReference
+    @JsonBackReference(value = "chatroom-chatmessage")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private ChatRoom chatRoom; // 방번호
@@ -33,7 +35,8 @@ public class ChatMessage  {
     private MessageType type; // 메시지 타입
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonManagedReference
+//    @JsonManagedReference
+    @JsonBackReference(value = "user-chatmessage")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; // 메시지 보낸사람
@@ -43,5 +46,4 @@ public class ChatMessage  {
 
     @Column
     private LocalDateTime createdAt; //생성 시간
-
 }

@@ -46,13 +46,15 @@ public class Post extends Timestamped implements Serializable {
     private int postPickCount; // 게시글 찜 수
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonManagedReference
+//    @JsonManagedReference
+    @JsonBackReference(value = "user-post")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_post"))
     private User user;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonManagedReference(value = "post-image")
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "post",
             cascade = CascadeType.ALL,
@@ -60,7 +62,8 @@ public class Post extends Timestamped implements Serializable {
     private List<Image> imageList = new ArrayList<>();
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonManagedReference(value = "post-postpick")
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "post",
             cascade = CascadeType.ALL,

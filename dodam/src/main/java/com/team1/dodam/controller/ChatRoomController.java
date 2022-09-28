@@ -1,19 +1,12 @@
 package com.team1.dodam.controller;
 
-import com.team1.dodam.domain.ChatRoom;
 import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.jwt.TokenProvider;
 import com.team1.dodam.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -43,13 +36,28 @@ public class ChatRoomController {
         return ResponseDto.success(chatRoomService.findRoomById(roomId, userDetails));
     }
 
-
 //    @GetMapping("/room/enter/{roomId}")
 //    public String roomDetail(Model model, @PathVariable String roomId) {
 //        model.addAttribute("roomId", roomId);
 //        return "/chat/roomdetail";
 //    }
 
+    //Redis 채팅방 전체조회
+    @GetMapping("/redis/rooms")
+    public ResponseDto<?> findChatroomAllInRedis(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return chatRoomService.findChatroomAllInRedis(userDetails);
+    }
 
+    //Redis 채팅방 상세정보 조회
+    @GetMapping("/redis/room/{roomId}")
+    public ResponseDto<?> findDetailChatroomInRedis(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return chatRoomService.findDetailChatroomInRedis(roomId, userDetails);
+    }
+
+    // Redis 채팅방 삭제 : Redis에서 해당 채팅방 삭제 및 MySQL에서 해당 채팅방의 Status를 Activated에서 Deleted로 변경
+    @DeleteMapping("/redis/room/{roomId}")
+    public ResponseDto<?> deleteChatroomInRedis(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return chatRoomService.deleteChatroomInRedis(roomId, userDetails);
+    }
 }
 

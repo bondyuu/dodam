@@ -43,21 +43,21 @@ public class ChatRoomController {
 //    }
 
     //Redis 채팅방 전체조회
-    @GetMapping("/redis/rooms")
-    public ResponseDto<?> findChatroomAllInRedis(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return chatRoomService.findChatroomAllInRedis(userDetails);
-    }
-
-    //Redis 채팅방 상세정보 조회
-    @GetMapping("/redis/room/{roomId}")
-    public ResponseDto<?> findDetailChatroomInRedis(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return chatRoomService.findDetailChatroomInRedis(roomId, userDetails);
-    }
-
-    // Redis 채팅방 삭제 : Redis에서 해당 채팅방 삭제 및 MySQL에서 해당 채팅방의 Status를 Activated에서 Deleted로 변경
-    @DeleteMapping("/redis/room/{roomId}")
-    public ResponseDto<?> deleteChatroomInRedis(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return chatRoomService.deleteChatroomInRedis(roomId, userDetails);
-    }
+//    @GetMapping("/redis/rooms")
+//    public ResponseDto<?> findChatroomAllInRedis(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return chatRoomService.findChatroomAllInRedis(userDetails);
+//    }
+//
+//    //Redis 채팅방 상세정보 조회
+//    @GetMapping("/redis/room/{roomId}")
+//    public ResponseDto<?> findDetailChatroomInRedis(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return chatRoomService.findDetailChatroomInRedis(roomId, userDetails);
+//    }
+//
+//    // Redis 채팅방 삭제 : Redis에서 해당 채팅방 삭제 및 MySQL에서 해당 채팅방의 Status를 Activated에서 Deleted로 변경
+//    @PutMapping("/room/{roomId}")
+//    public ResponseDto<?> deleteChatroomInRedis(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return chatRoomService.deleteChatroomInRedis(roomId, userDetails);
+//    }
 }
 

@@ -43,7 +43,11 @@ public enum ErrorCode {
     INVALID_IMAGE_FILE_EXTENSION(400, "INVALID_IMAGE_FILE_EXTENSION", "bmp,jpg,jpeg,png 형식의 이미지 파일이 요구됨."),
 
     //유저 권한
-    NOT_VALID_AUTHOTIRY(400, "NOT_VALID_AUTHOTIRY", "권한이 없습니다.");
+    NOT_VALID_AUTHOTIRY(400, "NOT_VALID_AUTHOTIRY", "권한이 없습니다."),
+
+    //ChatRoom
+    DUPLICATED_DEALER_NICKNAME(400, "DUPLICATED_DEALER_NICKNAME", "본인의 게시물입니다. 채팅방은 거래 목적으로만 개설됩니다."),
+    INVALID_CHATROOM_OWNER_OR_DEALER(400, "INVALID_CHATROOM_OWNER_OR_DEALER", "해당 채팅방의 관계자(게시물 소유자, 거래자)가 아닙니다.");
 
     private final int status;
     private final String code;

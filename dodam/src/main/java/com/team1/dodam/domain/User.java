@@ -1,10 +1,8 @@
 package com.team1.dodam.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.team1.dodam.dto.request.ProfileEditRequestDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +31,6 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String email;
 
-
     @Column(nullable = false)
     private String nickname;
 
@@ -48,33 +45,40 @@ public class User extends Timestamped {
     private String profileUrl;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonManagedReference(value = "user-post")
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonManagedReference(value = "user-image")
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
+    @JsonManagedReference(value = "user-chatmessage")
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
     private List<ChatMessage> messageList = new ArrayList<>();
 
-//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
+    @JsonManagedReference(value = "user1-chatroom")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user1")
     private List<ChatRoom> chatRoomList1 = new ArrayList<>();
 
-//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
+    @JsonManagedReference(value = "user2-chatroom")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user2")
     private List<ChatRoom> chatRoomList2 = new ArrayList<>();
 

@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class RedisSubscriber  {
+//public class RedisSubscriber implements MessageListener {
+public class RedisSubscriber {
 
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
@@ -50,6 +51,8 @@ public class RedisSubscriber  {
         }
     }
 
+
+    //에러 원인
 //    @Override
 //    public void onMessage(Message message, byte[] pattern) {
 //        try {

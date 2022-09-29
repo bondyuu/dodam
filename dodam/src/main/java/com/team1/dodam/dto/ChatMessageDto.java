@@ -7,13 +7,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-public class ChatMessageDto {
+public class ChatMessageDto implements Serializable {
 
     private ChatMessage.MessageType type;
     private String sender;

@@ -13,15 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ChatRoomDetailResponseDto implements Serializable {
+public class RedisChatRoomDetailResponseDto implements Serializable {
 
-    private String roomId;
-    private Long postId;
-    private String postTitle;
-    private String postImage;
-    private Long userId;
-    private String profileUrl;
-    private String nickname;
+    private String roomName;
+    private String itemName;
+    private String itemImageUrl;
+    private String dealerNickname;
+    private String dealerImageUrl;
     private List<ChatMessageDto> messageList;
-
 }

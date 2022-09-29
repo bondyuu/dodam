@@ -61,6 +61,7 @@ public class ChatRoom extends Timestamped implements Serializable{
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "chatRoomList")
 //    private List<User> userList = new ArrayList<>();
 
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonManagedReference
     @JsonBackReference(value = "user1-chatroom")
@@ -68,12 +69,14 @@ public class ChatRoom extends Timestamped implements Serializable{
     @JoinColumn(name = "user1_id")
     private User user1;
 
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonManagedReference
     @JsonBackReference(value = "user2-chatroom")
     @ManyToOne
     @JoinColumn(name = "user2_id")
     private User user2;
+
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference

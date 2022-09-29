@@ -72,11 +72,16 @@ public class SecurityConfiguration {
                 .antMatchers("/users/signup").permitAll()   //signup, login 해제
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/check/**").permitAll()  //중복확인 해제
+                .antMatchers("/users/refresh").permitAll()
                 .antMatchers("/users").permitAll()
                 .antMatchers("/mail/*").permitAll()   //인증 메일 보내기 해제
                 .antMatchers(HttpMethod.POST,"/users/certification").permitAll()
                 .antMatchers(HttpMethod.GET, "/posts").permitAll()  //게시글 목록 조회 해제
                 .antMatchers(HttpMethod.GET, "/posts/**").permitAll()  //게시글 조회 해제
+                .antMatchers("/subscribe/**").permitAll()
+                .antMatchers("pub/chat/message").permitAll()
+                .antMatchers("sub/chat/room/**").permitAll()
+                .antMatchers("chat/**").permitAll()
                 .antMatchers("/ws-stomp/**").permitAll()
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()

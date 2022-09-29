@@ -1,21 +1,20 @@
-package com.team1.dodam.dto.request;
+package com.team1.dodam.dto.response;
 
 import com.team1.dodam.domain.ChatMessage;
-import com.team1.dodam.domain.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageRequestDto {
+public class ChatResponseDto {
     private ChatMessage.MessageType type;
+    private Long senderId;
     private String sender;
     private String roomId;
     private String message;
-
-
 }

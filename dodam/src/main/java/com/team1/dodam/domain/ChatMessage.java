@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Builder
-public class ChatMessage implements Serializable {
+
+public class ChatMessage extends Timestamped implements Serializable {
+
 
     // 메시지 타입 : 입장, 채팅
     public enum MessageType {
@@ -24,6 +26,7 @@ public class ChatMessage implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
+
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonManagedReference
@@ -35,6 +38,7 @@ public class ChatMessage implements Serializable {
     @Column
     private MessageType type; // 메시지 타입
 
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonManagedReference
     @JsonBackReference(value = "user-chatmessage")
@@ -45,6 +49,8 @@ public class ChatMessage implements Serializable {
     @Column
     private String message; // 메시지
 
-    @Column
-    private LocalDateTime createdAt; //생성 시간
+
+   // @Column
+   // private LocalDateTime createdAt; //생성 시간
 }
+

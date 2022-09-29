@@ -2,7 +2,12 @@ package com.team1.dodam.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team1.dodam.domain.ChatMessage;
+import com.team1.dodam.domain.User;
 import com.team1.dodam.dto.request.MessageRequestDto;
+import com.team1.dodam.dto.response.ChatResponseDto;
+import com.team1.dodam.dto.response.MessageResponseDto;
+import com.team1.dodam.dto.response.ResponseDto;
+import com.team1.dodam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 //public class RedisSubscriber implements MessageListener {
 public class RedisSubscriber {
 
+    private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final SimpMessageSendingOperations messagingTemplate;
 //    private final RedisTemplate redisTemplate;
@@ -27,13 +33,24 @@ public class RedisSubscriber {
     public void sendMessage(String publishMessage) {
         try {
             // MessageRequestDto 객채로 맵핑
-            MessageRequestDto chatMessage = objectMapper.readValue(publishMessage, MessageRequestDto.class);
+            MessageRequestDto requestMessage = objectMapper.readValue(publishMessage, MessageRequestDto.class);
+            User user = userRepository.findByNickname(requestMessage.getSender()).orElseThrow(
+                    () -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다.")
+            );
+            ChatResponseDto chatMessage = ChatResponseDto.builder()
+                                                                .message(requestMessage.getMessage())
+                                                                .roomId(requestMessage.getRoomId())
+                                                                .sender(requestMessage.getSender())
+                                                                .type(requestMessage.getType())
+                                                                .senderId(user.getId())
+                                                                .build();
             // 채팅방을 구독한 클라이언트에게 메시지 발송
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
         } catch (Exception e) {
             log.error("Exception {}", e);
         }
     }
+
 
     //에러 원인
 //    @Override

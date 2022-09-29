@@ -19,6 +19,7 @@ public class PostSearchResponseDto {
     private String content;
     private String category;
     private String postStatus;
+    private String location;
     private int postVisitCount;
     private int postPickCount;
     private String postImageUrl;
@@ -37,6 +38,7 @@ public class PostSearchResponseDto {
         postSearchResponseDto.setContent(postDto.getContent());
         postSearchResponseDto.setCategory(postDto.getCategory());
         postSearchResponseDto.setPostStatus(postDto.getPostStatus());
+        postSearchResponseDto.setLocation(postDto.getLocation());
         postSearchResponseDto.setPostVisitCount(postDto.getPostVisitCount());
         postSearchResponseDto.setPostPickCount(postDto.getPostPickCount());
         postSearchResponseDto.setPostImageUrl(postDto.getImages().get(0).getImageUrl());

@@ -9,6 +9,8 @@ import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.ChatMessageRepository;
 import com.team1.dodam.repository.ChatRoomRepository;
 import com.team1.dodam.repository.PostRepository;
+import com.team1.dodam.redis.RedisSubscriber;
+import com.team1.dodam.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -26,9 +28,11 @@ import java.util.stream.Collectors;
 @Service
 public class ChatRoomService {
 
+    private final NotificationRepository notificationRepository;
     private final PostRepository postRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final NotificationService notificationService;
 //    private final UserRepository userRepository;
 //    private final RedisTemplate<String, Object> redisTemplate;
 //    private ValueOperations<String, Object> opsValueChatRoom;
@@ -38,10 +42,12 @@ public class ChatRoomService {
 
 //    private final ObjectMapper objectMapper;
 
+
 //    @PostConstruct
 //    private void init() {
 //        opsValueChatRoom = redisTemplate.opsForValue();
 //        opsHashChatRoom = redisTemplate.opsForHash();
+//        topics = new HashMap<>();
 //    }
 
 
@@ -93,6 +99,7 @@ public class ChatRoomService {
                                                                                        .sender(message.getUser().getNickname())
                                                                                        .message(message.getMessage())
                                                                                        .createdAt(message.getCreatedAt())
+                                                                                       .senderId(message.getUser().getId())
                                                                                        .build())
                                                          .collect(Collectors.toList());
         return ChatRoomDetailResponseDto.builder()
@@ -121,6 +128,7 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findByPostAndUser2(post, loginUser).orElse(null);
 
 
+
         // 시도1~
 //        String chatRoomName = post.getUser().getNickname() + ":" + loginUser.getNickname();
 //        String chatRoomName = "ListOfChatroom";
@@ -135,10 +143,14 @@ public class ChatRoomService {
         if(chatRoom == null) {
             ChatRoom newRoom = chatRoomRepository.save(ChatRoom.create(post.getUser(), loginUser, post));
 
+
             // 시도2~
 //            opsHashChatRoom.put(chatRoomName, newRoom.getRoomName(), newRoom);
 //            opsValueChatRoom.set(newRoom.getRoomName(), newRoom);
             // ~시도2
+
+            notificationRepository.save(new Notification(newRoom.getUser1(),newRoom, newRoom.getUser2().getNickname()+"님이 채팅을 시작했습니다.",false));
+
 
             return ResponseDto.success(ChatRoomResponseDto.builder().msg("INIT").roomId(newRoom.getRoomId()).build());
         } else{

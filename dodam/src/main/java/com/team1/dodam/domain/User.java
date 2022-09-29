@@ -23,7 +23,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
-public class User extends Timestamped implements Serializable {
+public class User extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -60,6 +60,7 @@ public class User extends Timestamped implements Serializable {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
     @JsonManagedReference(value = "user-chatmessage")
@@ -67,6 +68,7 @@ public class User extends Timestamped implements Serializable {
             mappedBy = "user",
             orphanRemoval = true)
     private List<ChatMessage> messageList = new ArrayList<>();
+
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference

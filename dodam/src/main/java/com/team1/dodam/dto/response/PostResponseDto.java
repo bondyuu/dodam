@@ -23,6 +23,7 @@ public class PostResponseDto {
     private int postPickCount;
     private boolean postPicked;
     private List<String> imageUrl;
+    private Long userId;
     private String nickname;
     private String userImageUrl;
     private String userLocation;
@@ -39,6 +40,7 @@ public class PostResponseDto {
         this.postPickCount = post.getPostPickCount();
         this.postPicked = postPicked;
         this.imageUrl = imageUrlList;
+        this.userId = user.getId();
         this.nickname = user.getNickname();
         this.userImageUrl = user.getProfileUrl();
         this.userLocation = user.getLocation();

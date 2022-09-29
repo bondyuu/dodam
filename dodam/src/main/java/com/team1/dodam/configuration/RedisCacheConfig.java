@@ -36,13 +36,29 @@ public class RedisCacheConfig {
 
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
-        // User
-//        cacheConfigurations.put(CacheKey.USER, RedisCacheConfiguration.defaultCacheConfig()
-//                .entryTtl(Duration.ofSeconds(CacheKey.USER_EXPIRE_SEC)));
+        // Chatrooms
+        cacheConfigurations.put(CacheKey.CHATROOMS, RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(CacheKey.CHATROOMS_EXPIRE_SEC)));
 
         // Chatroom
-        cacheConfigurations.put(CacheKey.CAHTROOM, RedisCacheConfiguration.defaultCacheConfig()
+        cacheConfigurations.put(CacheKey.CHATROOM, RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(CacheKey.CHATROOM_EXPIRE_SEC)));
+
+        // MyPage-Posts
+        cacheConfigurations.put(CacheKey.MYPAGEPOSTS, RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(CacheKey.MYPAGEPOSTS_EXPIRE_SEC)));
+
+        // MyPage-Picks
+        cacheConfigurations.put(CacheKey.MYPAGEPICKS, RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(CacheKey.MYPAGEPICKS_EXPIRE_SEC)));
+
+        // Posts
+        cacheConfigurations.put(CacheKey.POSTS, RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(CacheKey.POSTS_EXPIRE_SEC)));
+
+        // Post
+        cacheConfigurations.put(CacheKey.POST, RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(CacheKey.POST_EXPIRE_SEC)));
 
         return RedisCacheManager.RedisCacheManagerBuilder
                                 .fromConnectionFactory(connectionFactory)

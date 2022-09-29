@@ -14,15 +14,19 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NotificationResponseDto {
 
+    private Long notificationId;
     private String chatRoomId;
     private String content;
     private Boolean isRead;
+    private String postImage;
 
     public static NotificationResponseDto from(Notification notification){
         NotificationResponseDto notificationResponseDto = new NotificationResponseDto();
+        notificationResponseDto.notificationId = notification.getId();
         notificationResponseDto.chatRoomId = notification.getChatRoom().getRoomId();
         notificationResponseDto.content = notification.getContent();
         notificationResponseDto.isRead = notification.getIsRead();
+        notificationResponseDto.postImage = notification.getChatRoom().getPost().getImageList().get(0).getImageUrl();
         return notificationResponseDto;
     }
 }

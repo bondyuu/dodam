@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.PostConstruct;
@@ -15,10 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@Repository
+@Service
 public class EmitterRepository {
-    private final RedisTemplate<String, SseEmitter> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, String, SseEmitter> opsHashEmitter;
+    private ValueOperations<String, SseEmitter> opsValueEmitter;
     private static final String EMITTER = "EMITTER";
 
     @PostConstruct
@@ -26,13 +29,15 @@ public class EmitterRepository {
         opsHashEmitter = redisTemplate.opsForHash();
     }
 
-    public SseEmitter save(Long userId, String id, SseEmitter emitter) {
-        opsHashEmitter.put(String.valueOf(userId), id, emitter);
+    public SseEmitter save(Long userId, SseEmitter emitter) {
+        opsHashEmitter.put(EMITTER, String.valueOf(userId), emitter);
         return emitter;
     }
-
-    public void deleteById(Long userId, String id) {
-        opsHashEmitter.delete(String.valueOf(userId), id);
+    public SseEmitter findEmitter(String userId){
+        return opsHashEmitter.get(EMITTER, userId);
+    }
+    public void deleteById(Long userId) {
+        opsHashEmitter.delete(EMITTER, String.valueOf(userId));
     }
     public Map<String, SseEmitter> findAllStartWithId(String userId) {
         return opsHashEmitter.entries(userId);

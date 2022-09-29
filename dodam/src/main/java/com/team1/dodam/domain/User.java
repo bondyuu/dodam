@@ -25,7 +25,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
-public class User extends Timestamped implements Serializable {
+public class User extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -61,20 +61,20 @@ public class User extends Timestamped implements Serializable {
             orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user",
             orphanRemoval = true)
     private List<ChatMessage> messageList = new ArrayList<>();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user1")
     private List<ChatRoom> chatRoomList1 = new ArrayList<>();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user2")
     private List<ChatRoom> chatRoomList2 = new ArrayList<>();
 

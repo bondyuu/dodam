@@ -23,8 +23,8 @@ public class ChatRoom extends Timestamped implements Serializable{
     @Column
     private String title;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonManagedReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
@@ -32,20 +32,20 @@ public class ChatRoom extends Timestamped implements Serializable{
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "chatRoomList")
 //    private List<User> userList = new ArrayList<>();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonManagedReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user1_id")
     private User user1;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonManagedReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "user2_id")
     private User user2;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonBackReference
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messageList;
 

@@ -64,4 +64,9 @@ public class UserController {
     public ResponseDto<?> certifyEmail(@RequestBody CertificationRequestDto requestDto) {
         return userService.certify(requestDto);
     }
+
+    @GetMapping("/refresh")
+    public ResponseDto<?> refreshToken(HttpServletRequest request, HttpServletResponse response){
+        return userService.refreshToken(request, response);
+    }
 }

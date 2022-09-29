@@ -1,6 +1,7 @@
 package com.team1.dodam.service;
 
 import com.team1.dodam.domain.CertificationNumber;
+import com.team1.dodam.domain.RefreshToken;
 import com.team1.dodam.dto.TokenDto;
 import com.team1.dodam.dto.response.EditProfileResponseDto;
 import com.team1.dodam.dto.response.LoginResponseDto;
@@ -12,6 +13,7 @@ import com.team1.dodam.dto.request.*;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.jwt.TokenProvider;
 import com.team1.dodam.repository.CertificationNumberRepository;
+import com.team1.dodam.repository.RefreshTokenRepository;
 import com.team1.dodam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final RefreshTokenRepository refreshTokenRepository;
     private final CertificationNumberRepository certificationNumberRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -163,6 +166,24 @@ public class UserService {
         }
 
         return ResponseDto.fail(ErrorCode.DUPLICATED_NICKNAME);
+    }
+
+    @Transactional
+    public ResponseDto<?> refreshToken(HttpServletRequest request, HttpServletResponse response){
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return ResponseDto.fail(ErrorCode.INVALID_TOKEN);
+        }
+
+        String refreshTokenValue = request.getHeader("Refresh-Token");
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshTokenValue(refreshTokenValue).orElseThrow(
+                () -> new IllegalArgumentException("리프레쉬 토큰을 찾을 수 없습니다.")
+        );
+        User user = refreshToken.getUser();
+
+        tokenProvider.deleteRefreshToken(user);
+        TokenDto tokenDto = tokenProvider.generateTokenDto(user);
+        tokenToHeaders(tokenDto, response);
+        return ResponseDto.success(tokenDto);
     }
 
     @Transactional(readOnly = true)

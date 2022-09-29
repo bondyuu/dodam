@@ -5,9 +5,13 @@ import com.team1.dodam.dto.response.PostSearchResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.service.PostService;
+import com.team1.dodam.shared.CacheKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -31,6 +35,7 @@ public class PostController {
     // 게시글 전체 조회 및 검색
     // 검색어, 카테고리에 해당하는 게시글을 생성시간 기준 역순으로 조회
     @ApiOperation(value = "게시글 전체 조회 및 검색 메소드")
+    @CachePut(value = CacheKey.POSTS, key = "#pageable.pageNumber", unless = "#result == null")
     @GetMapping
     public ResponseDto<?> searchPosts(@RequestParam(required = false) String searchValue,
                                       @RequestParam(required = false) String category,
@@ -50,6 +55,7 @@ public class PostController {
 
     //게시글 상세 조회
     @ApiOperation(value = "게시글 상세 조회 메소드")
+    @Cacheable(value = CacheKey.POST, key = "#postId", unless = "#result == null")
     @GetMapping("/{postId}")
     public ResponseDto<?> readDetailPosts(@PathVariable (name = "postId") Long postId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -61,6 +67,7 @@ public class PostController {
 
     //게시글 수정
     @ApiOperation(value = "게시글 수정 메소드")
+    @CachePut(value = CacheKey.POST, key = "#postId", unless = "#result == null")
     @PutMapping(value = "/{postId}")
     public ResponseDto<?> updatePosts(@PathVariable(name = "postId") Long postId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -71,6 +78,7 @@ public class PostController {
 
     //게시글 삭제
     @ApiOperation(value = "게시글 삭제 메소드")
+    @CacheEvict(value = CacheKey.POST, key = "#postId")
     @PutMapping("/{postId}/delete")
     public ResponseDto<?> alterPostStatusToDelete(@PathVariable (name = "postId") Long postId,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {

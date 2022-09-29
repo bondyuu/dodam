@@ -5,15 +5,14 @@ import com.team1.dodam.domain.Post;
 import com.team1.dodam.dto.PostDto;
 import lombok.*;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostSearchResponseDto {
+public class PostSearchResponseDto implements Serializable {
     private Long id;
     private String title;
     private String content;

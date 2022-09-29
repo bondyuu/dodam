@@ -18,6 +18,7 @@ public class PostDto {
     private String title;
     private String content;
     private String category;
+    private String location;
     private String postStatus;
     private int postVisitCount;
     private int postPickCount;
@@ -42,7 +43,8 @@ public class PostDto {
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
         postDto.setContent(post.getContent());
-        postDto.setCategory(String.valueOf(post.getCategory()));
+        postDto.setCategory(String.valueOf(post.getCategory().getDescription()));
+        postDto.setLocation(post.getUser().getLocation());
         postDto.setPostStatus(String.valueOf(post.getPostStatus()));
         postDto.setPostVisitCount(post.getPostVisitCount());
         postDto.setPostPickCount(post.getPostPickCount());

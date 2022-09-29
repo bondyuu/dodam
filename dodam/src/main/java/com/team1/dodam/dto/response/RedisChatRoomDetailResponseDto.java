@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class RedisChatRoomDetailResponseDto {
+public class RedisChatRoomDetailResponseDto implements Serializable {
 
     private String roomName;
     private String itemName;

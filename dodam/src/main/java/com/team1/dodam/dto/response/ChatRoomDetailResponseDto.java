@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class ChatRoomDetailResponseDto {
+public class ChatRoomDetailResponseDto implements Serializable {
 
     private String roomId;
     private Long postId;

@@ -4,6 +4,7 @@ import com.team1.dodam.domain.ChatRoom;
 import com.team1.dodam.domain.Post;
 import com.team1.dodam.repository.ChatRoomRepository;
 import com.team1.dodam.repository.PostRepository;
+import com.team1.dodam.service.ChatRoomCacheService;
 import com.team1.dodam.service.ChatRoomService;
 import com.team1.dodam.service.PostService;
 import com.team1.dodam.shared.ChatRoomStatus;
@@ -25,7 +26,7 @@ public class Scheduler {
     private final PostRepository postRepository;
     private final PostService postService;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomService chatRoomService;
+    private final ChatRoomCacheService chatRoomCacheService;
 
     // 매월 매주 매일 새벽 1시에 Post 관련 Schedule 작업 수행
     @Transactional
@@ -50,7 +51,6 @@ public class Scheduler {
     @Scheduled(cron = "0 0 2 * * *")
     public void deleteChatRooms() {
         List<ChatRoom> chatRoomList = chatRoomRepository.findAllByChatRoomStatus(ChatRoomStatus.DELETED);
-        System.out.println(chatRoomList);
 
         for(ChatRoom chatRoom : chatRoomList) {
             LocalDate from = LocalDate.of(chatRoom.getModifiedAt().getYear(), chatRoom.getModifiedAt().getMonthValue(), chatRoom.getModifiedAt().getDayOfMonth());
@@ -58,10 +58,8 @@ public class Scheduler {
 
             Period period = Period.between(from, to);
 
-            System.out.println(chatRoom);
-
             if (period.getDays() >= 7) {
-                chatRoomService.deleteChatRoomsInMySQL(chatRoom.getRoomId());
+                chatRoomCacheService.deleteChatRoomsInMySQL(chatRoom.getRoomId());
             }
         }
     }

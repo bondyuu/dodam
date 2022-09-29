@@ -6,6 +6,8 @@ import com.team1.dodam.dto.response.*;
 import com.team1.dodam.global.error.ErrorCode;
 import com.team1.dodam.repository.ChatMessageRepository;
 import com.team1.dodam.repository.ChatRoomRepository;
+import com.team1.dodam.repository.NotificationRepository;
+import com.team1.dodam.repository.PostRepository;
 import com.team1.dodam.shared.ChatRoomStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 public class ChatRoomCacheService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final PostRepository postRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public ResponseDto<?> findChatroomAllInRedisOrMySQL(Long userId, UserDetailsImpl userDetails) {
@@ -80,6 +84,30 @@ public class ChatRoomCacheService {
                                                                  .dealerImageUrl(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserImageUrl() : chatRoom.getPostOwnerImageUrl())
                                                                  .messageList(messageDtoList)
                                                                  .build());
+    }
+
+    @Transactional
+    public ResponseDto<?> createChatroomInMySQL(UserDetailsImpl userDetails, Long postId) {
+
+        User loginUser = userDetails.getUser();
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+
+        if(loginUser == null) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
+
+        if(loginUser.getNickname().equals(post.getUser().getNickname())) { return ResponseDto.fail(ErrorCode.DUPLICATED_DEALER_NICKNAME); }
+
+        ChatRoom chatRoom = chatRoomRepository.findByPostAndUser2(post, loginUser).orElse(null);
+
+        if(chatRoom == null) {
+            ChatRoom newRoom = chatRoomRepository.save(ChatRoom.create(post.getUser(), loginUser, post));
+
+            notificationRepository.save(new Notification(newRoom.getUser1(),newRoom, newRoom.getUser2().getNickname()+"님이 채팅을 시작했습니다.",false));
+
+            return ResponseDto.success(ChatRoomResponseDto.builder().msg("INIT").roomId(newRoom.getRoomId()).build());
+        } else{
+            return ResponseDto.success(ChatRoomResponseDto.builder().msg("EXIST").roomId(chatRoom.getRoomId()).build());
+        }
     }
 
     @Transactional

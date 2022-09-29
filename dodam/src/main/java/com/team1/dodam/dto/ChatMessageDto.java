@@ -17,6 +17,7 @@ public class ChatMessageDto {
 
     private ChatMessage.MessageType type;
     private String sender;
+    private Long senderId;
     private String message;
     private LocalDateTime createdAt;
 }

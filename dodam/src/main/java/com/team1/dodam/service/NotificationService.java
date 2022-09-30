@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team1.dodam.domain.ChatRoom;
 import com.team1.dodam.domain.Notification;
 import com.team1.dodam.domain.User;
+import com.team1.dodam.domain.UserDetailsImpl;
 import com.team1.dodam.dto.response.NotificationResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.repository.NotificationRepository;
@@ -81,5 +82,14 @@ public class NotificationService {
         );
         notification.changeIsRead();
         return ResponseDto.success(String.valueOf(notification.getIsRead()));
+    }
+
+    @Transactional
+    public ResponseDto<?> getNotifications(UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+
+        List<Notification> notificationList = notificationRepository.findAllByUser(user);
+
+        return ResponseDto.success(notificationList.stream().map(NotificationResponseDto::from).collect(Collectors.toList()));
     }
 }

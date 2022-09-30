@@ -186,9 +186,19 @@ public class PostService {
             return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
         }
 
-//        if (!imageFileList.get(0).getResource().getFilename().equals("") || requestDto.getStringImageFileList().size() != 0) {
-        if(imageFileList != null || requestDto.getStringImageFileList().size() != 0) {
+        if(imageFileList != null && requestDto.getStringImageFileList() == null) {
+            for(MultipartFile imageFile: imageFileList) {
+                Image image = imageRepository.save(Image.builder()
+                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post/" + loginUser.getNickname() + "/" + post.getId()))
+                        .user(loginUser)
+                        .post(post)
+                        .build());
+                post.mapToImage(image);
+                imageList.add(image.getImageUrl());
+            }
+        }
 
+        if(imageFileList == null && requestDto.getStringImageFileList() != null) {
             for(String stringImageFileUrl : requestDto.getStringImageFileList()) {
                 Image image = imageRepository.save(Image.builder()
                         .imageUrl(stringImageFileUrl)
@@ -198,17 +208,29 @@ public class PostService {
                 post.mapToImage(image);
                 imageList.add(image.getImageUrl());
             }
-
-            for(MultipartFile imageFile: imageFileList) {
-                Image image = imageRepository.save(Image.builder()
-                                                        .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post/" + loginUser.getNickname() + "/" + post.getId()))
-                                                        .user(loginUser)
-                                                        .post(post)
-                                                        .build());
-                post.mapToImage(image);
-                imageList.add(image.getImageUrl());
-            }
         }
+
+        if(imageFileList != null && requestDto.getStringImageFileList() != null) {
+        for(String stringImageFileUrl : requestDto.getStringImageFileList()) {
+            Image image = imageRepository.save(Image.builder()
+                    .imageUrl(stringImageFileUrl)
+                    .user(loginUser)
+                    .post(post)
+                    .build());
+            post.mapToImage(image);
+            imageList.add(image.getImageUrl());
+        }
+
+        for(MultipartFile imageFile: imageFileList) {
+            Image image = imageRepository.save(Image.builder()
+                                                    .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post/" + loginUser.getNickname() + "/" + post.getId()))
+                                                    .user(loginUser)
+                                                    .post(post)
+                                                    .build());
+            post.mapToImage(image);
+            imageList.add(image.getImageUrl());
+        }
+    }
 
         return ResponseDto.success(PostResponseDto.builder()
                                                   .post(post)

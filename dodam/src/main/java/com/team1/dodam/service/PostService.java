@@ -140,7 +140,13 @@ public class PostService {
     @Transactional
     public ResponseDto<?> updatePosts(Long postId, UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
 
-        int inputFileListSize = imageFileList.size() + requestDto.getStringImageFileList().size();
+        int inputFileListSize = 0;
+
+        if(imageFileList == null) {
+            inputFileListSize = requestDto.getStringImageFileList().size();
+        }
+
+        inputFileListSize = imageFileList.size() + requestDto.getStringImageFileList().size();
 
         User loginUser = userDetails.getUser();
 

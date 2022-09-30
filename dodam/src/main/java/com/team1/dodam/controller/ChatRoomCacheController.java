@@ -9,11 +9,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = {"[Redis Cache] 채팅방 전체 조회/상세 조회/삭제"})
+@Api(tags = {"[Redis Cache] 채팅방 전체 조회/상세 조회/생성/삭제"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("chat/user")
@@ -22,7 +23,7 @@ public class ChatRoomCacheController {
     private final ChatRoomCacheService chatRoomCacheService;
 
     @ApiOperation(value = "채팅방 전체 조회 메소드")
-    @Cacheable(value = CacheKey.CAHTROOM, key = "#userId", unless = "#result == null")
+    @Cacheable(value = CacheKey.CHATROOMS, key = "#userId", unless = "#result == null")
     @GetMapping("/{userId}/chatrooms")
     public ResponseDto<?> findChatroomAllInRedisOrMySQL(@PathVariable (name = "userId") Long userId,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -30,7 +31,7 @@ public class ChatRoomCacheController {
     }
 
     @ApiOperation(value = "채팅방 상세 조회 메소드")
-    @Cacheable(value = CacheKey.CAHTROOM, key = "#roomId", unless = "#result == null")
+    @Cacheable(value = CacheKey.CHATROOM, key = "#roomId", unless = "#result == null")
     @GetMapping("/{userId}/chatroom/{roomId}")
     public ResponseDto<?> findDetailChatroomInRedisOrMySQL(@PathVariable (name = "userId") Long userId,
                                   @PathVariable (name = "roomId") String roomId,
@@ -38,9 +39,17 @@ public class ChatRoomCacheController {
         return chatRoomCacheService.findDetailChatroomInRedisOrMySQL(userId, roomId, userDetails);
     }
 
+    @ApiOperation(value = "채팅방 생성 메소드")
+    @CachePut(value = CacheKey.CHATROOMS, key = "#userDetails.getUser().getId()", unless = "#result == null")
+    @PostMapping("/{postId}/chatrooms")
+    public ResponseDto<?> createChatroomInMySQL(@PathVariable Long postId,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return chatRoomCacheService.createChatroomInMySQL(userDetails, postId);
+    }
+
     // Redis 채팅방 삭제 : Redis에서 해당 채팅방 캐시 삭제 및 MySQL에서 해당 채팅방의 Status를 Activated에서 Deleted로 변경
     @ApiOperation(value = "채팅방 삭제 메소드")
-    @CacheEvict(value = CacheKey.CAHTROOM, key = "#userId")
+    @CacheEvict(value = CacheKey.CHATROOMS, key = "#userId")
     @DeleteMapping("/{userId}/chatroom/{roomId}")
     public ResponseDto<?> deleteChatroomInRedisAndMySQL(@PathVariable (name = "userId") Long userId,
                                                         @PathVariable (name = "roomId") String roomId,

@@ -19,6 +19,7 @@ public class PostResponseDto {
     private String content;
     private String category;
     private String postStatus;
+    private String dealState;
     private int postVisitCount;
     private int postPickCount;
     private boolean postPicked;
@@ -36,6 +37,7 @@ public class PostResponseDto {
         this.content = post.getContent();
         this.category = String.valueOf(post.getCategory());
         this.postStatus = String.valueOf(post.getPostStatus());
+        this.dealState = String.valueOf(post.getDealState());
         this.postVisitCount = post.getPostVisitCount();
         this.postPickCount = post.getPostPickCount();
         this.postPicked = postPicked;

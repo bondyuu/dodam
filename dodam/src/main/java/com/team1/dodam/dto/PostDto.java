@@ -20,6 +20,7 @@ public class PostDto {
     private String category;
     private String location;
     private String postStatus;
+    private String dealState;
     private int postVisitCount;
     private int postPickCount;
     private String createdAt;
@@ -46,9 +47,9 @@ public class PostDto {
         postDto.setCategory(String.valueOf(post.getCategory().getDescription()));
         postDto.setLocation(post.getUser().getLocation());
         postDto.setPostStatus(String.valueOf(post.getPostStatus()));
+        postDto.setDealState(post.getDealState().getDescription());
         postDto.setPostVisitCount(post.getPostVisitCount());
         postDto.setPostPickCount(post.getPostPickCount());
-//        postDto.setCreatedAt(String.valueOf(post.getCreatedAt()));
         postDto.setCreatedAt(formatTime(post.getCreatedAt()));
         postDto.setModifiedAt(String.valueOf(post.getModifiedAt()));
         postDto.setUserDto(UserDto.from(post.getUser()));

@@ -21,7 +21,7 @@ public class ChatRoomController {
 
     //채팅방 전체조회
     @GetMapping("/rooms/{userId}")
-    @Cacheable(value = CacheKey.CAHTROOM, key = "#userId", unless = "#result == null")
+    @Cacheable(value = CacheKey.CHATROOMS, key = "#userId", unless = "#result == null")
     public ResponseDto<?> room(@PathVariable (name = "userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(chatRoomService.findAllRoom(userDetails));
     }
@@ -35,7 +35,7 @@ public class ChatRoomController {
 
     //채팅방 상세정보 조회
     @GetMapping("/room/{roomId}")
-    @Cacheable(value = CacheKey.CAHTROOM, key = "#roomId", unless = "#result == null")
+    @Cacheable(value = CacheKey.CHATROOM, key = "#roomId", unless = "#result == null")
     public ResponseDto<?> roomInfo(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(chatRoomService.findRoomById(roomId, userDetails));
     }

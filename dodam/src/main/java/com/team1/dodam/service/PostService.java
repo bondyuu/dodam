@@ -79,7 +79,8 @@ public class PostService {
 
         List<String> imageList = new ArrayList<>();
 
-        if (imageFileList.get(0).getResource().getFilename().equals("")) {
+//        if (imageFileList.get(0).getResource().getFilename().equals("")) {
+        if (imageFileList == null) {
             Image image = imageRepository.save(Image.builder()
                                                     .imageUrl("https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/default.png")
                                                     .user(loginUser)
@@ -99,7 +100,8 @@ public class PostService {
             return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
         }
 
-        if(!imageFileList.get(0).getResource().getFilename().equals("")) {
+//        if(!imageFileList.get(0).getResource().getFilename().equals("")) {
+        if(imageFileList != null) {
             for(MultipartFile imageFile: imageFileList) {
                 Image image = imageRepository.save(Image.builder()
                                                         .imageUrl(s3UploadService.s3UploadFile(imageFile, "static/post/" + loginUser.getNickname() + "/" + post.getId()))
@@ -121,8 +123,10 @@ public class PostService {
     @Transactional
     public ResponseDto<?> readDetailPosts(Long postId, Long userId) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
+        Post post = postRepository.findById(postId).stream()
+                .filter(p -> p.getPostStatus().equals(PostStatus.ACTIVATED))
+                .findFirst()
+                .orElseThrow(() -> new NullPointerException("해당 게시글은 삭제되었습니다."));
         post.visit();
 
         return ResponseDto.success(PostResponseDto.builder()

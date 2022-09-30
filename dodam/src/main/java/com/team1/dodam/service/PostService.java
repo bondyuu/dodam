@@ -140,6 +140,8 @@ public class PostService {
     @Transactional
     public ResponseDto<?> updatePosts(Long postId, UserDetailsImpl userDetails, PostRequestDto requestDto, List<MultipartFile> imageFileList) throws IOException {
 
+        int inputFileListSize = imageFileList.size() + requestDto.getStringImageFileList().size();
+
         User loginUser = userDetails.getUser();
 
         if(loginUser == null) { return ResponseDto.fail(ErrorCode.USER_NOT_FOUND); }
@@ -152,7 +154,8 @@ public class PostService {
 
         List<String> imageList = new ArrayList<>();
 
-        if (imageFileList.get(0).getResource().getFilename().equals("")) {
+//        if (imageFileList.get(0).getResource().getFilename().equals("") && requestDto.getStringImageFileList().size() == 0) {
+        if (imageFileList == null && requestDto.getStringImageFileList().size() == 0) {
             Image image = imageRepository.save(Image.builder()
                                                     .imageUrl("https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/default.png")
                                                     .user(loginUser)
@@ -168,11 +171,23 @@ public class PostService {
                                                       .build());
         }
 
-        if (imageFileList.size() > 5) {
+//        if (imageFileList.size() > 5) {
+        if (inputFileListSize > 5) {
             return ResponseDto.fail(ErrorCode.POST_IMAGE_LENGTH_EXCEEDED);
         }
 
-        if(!imageFileList.get(0).getResource().getFilename().equals("")) {
+//        if (!imageFileList.get(0).getResource().getFilename().equals("") || requestDto.getStringImageFileList().size() != 0) {
+        if(imageFileList != null || requestDto.getStringImageFileList().size() != 0) {
+
+            for(String stringImageFileUrl : requestDto.getStringImageFileList()) {
+                Image image = imageRepository.save(Image.builder()
+                        .imageUrl(stringImageFileUrl)
+                        .user(loginUser)
+                        .post(post)
+                        .build());
+                post.mapToImage(image);
+                imageList.add(image.getImageUrl());
+            }
 
             for(MultipartFile imageFile: imageFileList) {
                 Image image = imageRepository.save(Image.builder()

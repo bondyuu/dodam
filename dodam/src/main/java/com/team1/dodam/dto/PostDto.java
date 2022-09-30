@@ -5,6 +5,7 @@ import com.team1.dodam.domain.Image;
 import com.team1.dodam.domain.Post;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostDto {
+public class PostDto implements Serializable {
     private Long id;
     private String title;
     private String content;

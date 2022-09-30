@@ -2,7 +2,9 @@ package com.team1.dodam.shared;
 
 import lombok.Getter;
 
-public enum Category {
+import java.io.Serializable;
+
+public enum Category implements Serializable {
     DEVICE("디지털기기"),
     APPLIANCE("생활가전"),
     KITCHEN("생활/주방"),

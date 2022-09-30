@@ -142,11 +142,15 @@ public class PostService {
 
         int inputFileListSize = 0;
 
-        if(imageFileList == null) {
-            inputFileListSize = requestDto.getStringImageFileList().size();
-        }
+//        if(imageFileList == null ) {
+//            inputFileListSize = requestDto.getStringImageFileList().size();
+//        }
 
-        inputFileListSize = imageFileList.size() + requestDto.getStringImageFileList().size();
+        //위의 코드로 정상작동하지 않으면 위의 코드를 주석처리하고 아래 코드를 사용
+        if(imageFileList == null && requestDto.getStringImageFileList() == null) { inputFileListSize = 0; }
+        else if(imageFileList == null) { inputFileListSize = requestDto.getStringImageFileList().size(); }
+        else if(requestDto.getStringImageFileList() == null) { inputFileListSize = imageFileList.size(); }
+        else { inputFileListSize = imageFileList.size() + requestDto.getStringImageFileList().size(); }
 
         User loginUser = userDetails.getUser();
 

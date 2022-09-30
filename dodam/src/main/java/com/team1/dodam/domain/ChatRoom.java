@@ -25,12 +25,6 @@ public class ChatRoom extends Timestamped implements Serializable{
     private String roomId;
     @Column
     private String roomName;
-//    @Column
-//    private String dealerImageUrl;
-//    @Column
-//    private String dealerNickname;
-//    @Column
-//    private String dealerLocation;
     @Column
     private String postOwnerImageUrl;
     @Column

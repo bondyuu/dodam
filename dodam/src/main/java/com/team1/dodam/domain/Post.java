@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team1.dodam.dto.request.PostRequestDto;
 import com.team1.dodam.shared.Category;
+import com.team1.dodam.shared.DealState;
 import com.team1.dodam.shared.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +45,9 @@ public class Post extends Timestamped {
 
     @Column(nullable = false)
     private int postPickCount; // 게시글 찜 수
+
+    @Column
+    private DealState dealState; // 거래상태
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonManagedReference
@@ -86,6 +90,7 @@ public class Post extends Timestamped {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.category = Category.valueOf(requestDto.getCategory());
+        this.dealState = DealState.ONGOING;
         this.postStatus = PostStatus.ACTIVATED;
     }
 
@@ -105,4 +110,7 @@ public class Post extends Timestamped {
     public void discountPostPickCount(PostPick postPick) { this.postPickList.remove(postPick); }
 
     public void updatePostStatusToDeleted() { this.postStatus = PostStatus.DELETED; }
+    public void updateDealState() {
+        this.dealState = DealState.COMPLETED;
+    }
 }

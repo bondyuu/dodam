@@ -57,7 +57,7 @@ public class ChatController {
     /**
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
      */
-    @MessageMapping("/chat/message/{roomId}")
+    @MessageMapping("/chat/message/{roomId}") //유저id값 추가하기
     public void message(MessageRequestDto message, @Header(value = "Authorization") String token,
                         @DestinationVariable String roomId) throws JsonProcessingException {
         String[] check = token.split("\\.");

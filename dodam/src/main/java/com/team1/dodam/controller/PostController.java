@@ -92,4 +92,10 @@ public class PostController {
                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.pickPosts(postId, userDetails);
     }
+
+    @PutMapping("/{postId}/deal")
+    public ResponseDto<?> completeDeal(@PathVariable Long postId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.completeDeal(postId, userDetails);
+    }
 }

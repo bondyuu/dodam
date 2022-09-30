@@ -6,7 +6,6 @@ import com.team1.dodam.domain.Notification;
 import com.team1.dodam.domain.User;
 import com.team1.dodam.dto.response.NotificationResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
-import com.team1.dodam.repository.EmitterRepository;
 import com.team1.dodam.repository.NotificationRepository;
 import com.team1.dodam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,18 +19,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
-    private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private static final Map<Long, SseEmitter> sseEmitters = new HashMap<>();
     public SseEmitter subscribe(Long userId) {
 
+        if(sseEmitters.containsKey(userId)) {
+            sseEmitters.remove(userId);
+        }
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         sseEmitters.put(userId, emitter);
 
@@ -40,42 +42,31 @@ public class NotificationService {
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new IllegalArgumentException("회원 정보를 찾을 수 없습니다.")
         );
-        List<Notification> notificationList = notificationRepository.findAllByUser(user);
+        List<Notification> notificationList = notificationRepository.findAllByUser(user)
+                .stream()
+                .filter(c -> c.getIsRead().equals(false))
+                .collect(Collectors.toList());
         if (notificationList.size() != 0){
-            notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), NotificationResponseDto.from(notification)));
+            notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), "알림"));
         }
 
-        // 503 에러를 방지하기 위한 더미 이벤트 전송
-//        sendToClient(emitter, String.valueOf(userId), "EventStream Created. [userId=" + userId + "]");
         return emitter;
     }
+    public void saveAndSend(ChatRoom chatRoom) {
+        Long userId = chatRoom.getUser1().getId();
+        if(sseEmitters.containsKey(userId)) {
+            sendToClient(sseEmitters.get(userId),String.valueOf(userId),"알림");
+        }
+        notificationRepository.save(new Notification(chatRoom.getUser1(),chatRoom, "알림",false));
 
-//    public void send(User user, ChatRoom chatRoom, String content) {
-//        Notification notification = createNotification(user, chatRoom, content);
-//        String id = String.valueOf(user.getId());
-//
-//        if(sseEmitters.containsKey(user.getId())){
-//            SseEmitter emitter = sseEmitters.get(user.getId());
-//            sendToClient(emitter, id, NotificationResponseDto.from(notification));
-//        }
-//
-//    }
-
-//    public Notification createNotification(User user, ChatRoom chatRoom, String content) {
-//        return Notification.builder()
-//                .user(user)
-//                .content(content)
-//                .chatRoom(chatRoom)
-//                .isRead(false)
-//                .build();
-//    }
+    }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(id)
                     .name("message")
-                    .data(data,MediaType.APPLICATION_JSON));
+                    .data(data));
         } catch (IOException exception) {
             Long userId = Long.parseLong(id);
             sseEmitters.remove(userId);

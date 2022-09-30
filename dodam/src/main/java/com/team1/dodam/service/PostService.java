@@ -248,4 +248,14 @@ public class PostService {
         );
         return ResponseDto.success(postPicked);
     }
+
+    @Transactional
+    public ResponseDto<?> completeDeal(Long postId, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
+        );
+
+        post.updateDealState();
+        return ResponseDto.success(MessageResponseDto.builder().msg("거래 완료").build());
+    }
 }

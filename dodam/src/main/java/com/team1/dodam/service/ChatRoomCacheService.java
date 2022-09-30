@@ -43,13 +43,13 @@ public class ChatRoomCacheService {
 
         return ResponseDto.success(chatRooms.stream().map(chatRoom -> ChatRoomListResponseDto.builder()
                         .roomId(chatRoom.getRoomId())
-                        .roomName(chatRoom.getRoomName())
-                        .dealerImageUrl(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserImageUrl() : chatRoom.getPostOwnerImageUrl())
-                        .dealerNickname(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserNickname() : chatRoom.getPostOwnerNickname())
-                        .dealerLocation(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserLocation() : chatRoom.getPostOwnerLocation())
-                        .itemImageUrl(chatRoom.getItemImageUrl())
+
+                        .profileUrl(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserImageUrl() : chatRoom.getPostOwnerImageUrl())
+                        .nickname(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserNickname() : chatRoom.getPostOwnerNickname())
+                        .location(chatRoom.getRoomName().split(":")[0].equals(loginUser.getNickname()) ? chatRoom.getRequestDealUserLocation() : chatRoom.getPostOwnerLocation())
+                        .postImage(chatRoom.getItemImageUrl())
                         .lastMessage(Objects.equals(chatMessageRepository.findTopByChatRoom(chatRoom, Sort.by("createdAt")), null) ? "" : chatMessageRepository.findTopByChatRoom(chatRoom, Sort.by("createdAt")).getMessage())
-                        .modifiedAt(MyPageService.formatTime(chatRoom.getModifiedAt()))
+                        .lastTime(MyPageService.formatTime(chatRoom.getModifiedAt()))
                         .build())
                 .collect(Collectors.toList()));
     }

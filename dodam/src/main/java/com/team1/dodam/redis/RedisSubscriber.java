@@ -16,6 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -43,6 +45,7 @@ public class RedisSubscriber {
                                                                 .sender(requestMessage.getSender())
                                                                 .type(requestMessage.getType())
                                                                 .senderId(user.getId())
+                                                                .createdAt(LocalDateTime.now())
                                                                 .build();
             // 채팅방을 구독한 클라이언트에게 메시지 발송
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);

@@ -18,6 +18,7 @@ public class PostSearchResponseDto implements Serializable {
     private String content;
     private String category;
     private String postStatus;
+    private String dealState;
     private String location;
     private int postVisitCount;
     private int postPickCount;
@@ -37,6 +38,7 @@ public class PostSearchResponseDto implements Serializable {
         postSearchResponseDto.setContent(postDto.getContent());
         postSearchResponseDto.setCategory(postDto.getCategory());
         postSearchResponseDto.setPostStatus(postDto.getPostStatus());
+        postSearchResponseDto.setDealState(postDto.getDealState());
         postSearchResponseDto.setLocation(postDto.getLocation());
         postSearchResponseDto.setPostVisitCount(postDto.getPostVisitCount());
         postSearchResponseDto.setPostPickCount(postDto.getPostPickCount());

@@ -5,6 +5,7 @@ import com.team1.dodam.domain.ChatRoom;
 import com.team1.dodam.domain.Notification;
 import com.team1.dodam.domain.User;
 import com.team1.dodam.domain.UserDetailsImpl;
+import com.team1.dodam.dto.response.MessageResponseDto;
 import com.team1.dodam.dto.response.NotificationResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
 import com.team1.dodam.repository.NotificationRepository;
@@ -91,5 +92,12 @@ public class NotificationService {
         List<Notification> notificationList = notificationRepository.findAllByUser(user);
 
         return ResponseDto.success(notificationList.stream().map(NotificationResponseDto::from).collect(Collectors.toList()));
+    }
+
+    @Transactional
+    public ResponseDto<?> readNotifications(UserDetailsImpl userDetails) {
+        List<Notification> notificationList = notificationRepository.findAllByUser(userDetails.getUser());
+        notificationList.forEach(Notification::changeIsRead);
+        return ResponseDto.success(MessageResponseDto.builder().msg("읽음 처리").build());
     }
 }

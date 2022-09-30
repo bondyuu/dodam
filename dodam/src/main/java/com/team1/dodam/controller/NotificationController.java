@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class NotificationController {
@@ -27,6 +29,12 @@ public class NotificationController {
     public ResponseDto<?> changeIsRead(@PathVariable Long notificationId) {
         return notificationService.changeIsRead(notificationId);
     }
+
+    @PutMapping("/notification/read")
+    public ResponseDto<?> readNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return notificationService.readNotifications(userDetails);
+    }
+
     @GetMapping("/notifications")
     public ResponseDto<?> getNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return notificationService.getNotifications(userDetails);

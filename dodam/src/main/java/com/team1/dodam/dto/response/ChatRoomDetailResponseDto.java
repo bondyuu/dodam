@@ -19,6 +19,7 @@ public class ChatRoomDetailResponseDto implements Serializable {
     private Long postId;
     private String postTitle;
     private String postImage;
+    private String dealState;
     private Long userId;
     private String profileUrl;
     private String nickname;

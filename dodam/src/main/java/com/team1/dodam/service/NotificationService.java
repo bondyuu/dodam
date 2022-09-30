@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,9 @@ public class NotificationService {
     private static final Map<Long, SseEmitter> sseEmitters = new HashMap<>();
     public SseEmitter subscribe(Long userId) {
 
+        if(sseEmitters.containsKey(userId)) {
+            sseEmitters.remove(userId);
+        }
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         sseEmitters.put(userId, emitter);
 
@@ -38,21 +42,31 @@ public class NotificationService {
         User user = userRepository.findById(userId).orElseThrow(
                 ()-> new IllegalArgumentException("회원 정보를 찾을 수 없습니다.")
         );
-        List<Notification> notificationList = notificationRepository.findAllByUser(user);
+        List<Notification> notificationList = notificationRepository.findAllByUser(user)
+                .stream()
+                .filter(c -> c.getIsRead().equals(false))
+                .collect(Collectors.toList());
         if (notificationList.size() != 0){
-            notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), NotificationResponseDto.from(notification)));
+            notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), "알림"));
         }
 
         return emitter;
     }
+    public void saveAndSend(ChatRoom chatRoom) {
+        Long userId = chatRoom.getUser1().getId();
+        if(sseEmitters.containsKey(userId)) {
+            sendToClient(sseEmitters.get(userId),String.valueOf(userId),"알림");
+        }
+        notificationRepository.save(new Notification(chatRoom.getUser1(),chatRoom, "알림",false));
 
+    }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(id)
                     .name("message")
-                    .data(data,MediaType.APPLICATION_JSON));
+                    .data(data));
         } catch (IOException exception) {
             Long userId = Long.parseLong(id);
             sseEmitters.remove(userId);

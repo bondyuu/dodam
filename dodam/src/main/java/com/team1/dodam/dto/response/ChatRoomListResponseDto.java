@@ -22,6 +22,8 @@ public class ChatRoomListResponseDto implements Serializable {
     private String location;
     private String lastMessage;
     private String lastTime;
+    private String postImage;
+    private String dealState;
 
 //    private String roomId;
 //    private String roomName;

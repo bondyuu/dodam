@@ -11,6 +11,7 @@ import com.team1.dodam.repository.ChatRoomRepository;
 import com.team1.dodam.repository.PostRepository;
 import com.team1.dodam.redis.RedisSubscriber;
 import com.team1.dodam.repository.*;
+import com.team1.dodam.shared.ChatRoomStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class ChatRoomService {
 
+    private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
     private final PostRepository postRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -38,8 +40,12 @@ public class ChatRoomService {
     public List<ChatRoomListResponseDto> findAllRoom(UserDetailsImpl userDetails) {
 //        return opsHashChatRoom.values(CHAT_ROOMS);
         User loginUser = userDetails.getUser();
-        List<ChatRoom> chatRoomList1 = chatRoomRepository.findAllByUser1(loginUser);
-        List<ChatRoom> chatRoomList2 = chatRoomRepository.findAllByuser2(loginUser);
+        List<ChatRoom> chatRoomList1 = chatRoomRepository.findAllByUser1(loginUser).stream()
+                .filter(chatRoom -> chatRoom.getChatRoomStatus().equals(ChatRoomStatus.ACTIVATED))
+                .collect(Collectors.toList());;
+        List<ChatRoom> chatRoomList2 = chatRoomRepository.findAllByuser2(loginUser).stream()
+                .filter(chatRoom -> chatRoom.getChatRoomStatus().equals(ChatRoomStatus.ACTIVATED))
+                .collect(Collectors.toList());;
         List<ChatRoomListResponseDto> chatRoomList = chatRoomList1.stream()
                                                                   .map(chatRoom -> ChatRoomListResponseDto.builder()
                                                                                                           .roomId(chatRoom.getRoomId())
@@ -57,7 +63,8 @@ public class ChatRoomService {
                                                                                  .location(chatRoom.getUser1().getLocation())
                                                                                  .nickname(chatRoom.getUser1().getNickname())
                                                                                  .lastMessage(chatMessageRepository.findTopByChatRoom(chatRoom,Sort.by("createdAt")) ==null ? "" : chatMessageRepository.findTopByChatRoom(chatRoom,Sort.by("createdAt")).getMessage())
-//                                                                                 .modifiedAt(chatMessageRepository.findTopByChatRoom(chatRoom,Sort.by("createdAt")) ==null ? "" :MyPageService.formatTime(chatMessageRepository.findTopByChatRoom(chatRoom,Sort.by("createdAt")).getCreatedAt()))
+                                                                                 .postImage(chatRoom.getPost().getImageList().get(0).getImageUrl())
+                                                                                 .dealState(chatRoom.getPost().getDealState().getDescription())
                                                                                  .build())
                                          .collect(Collectors.toList()));
         return chatRoomList;
@@ -90,7 +97,7 @@ public class ChatRoomService {
                                         .userId(user.getId())
                                         .nickname(user.getNickname())
                                         .profileUrl(user.getProfileUrl())
-//                                        .messageList(chatMessageRepository.findAllByChatRoom(chatRoom))
+                                        .dealState(chatRoom.getPost().getDealState().getDescription())
                                         .messageList(messageDtoList)
                                         .build();
     }
@@ -109,8 +116,8 @@ public class ChatRoomService {
 
         if(chatRoom == null) {
             ChatRoom newRoom = chatRoomRepository.save(ChatRoom.create(post.getUser(), loginUser, post));
-
-            notificationRepository.save(new Notification(newRoom.getUser1(),newRoom, newRoom.getUser2().getNickname()+"님이 채팅을 시작했습니다.",false));
+            notificationService.saveAndSend(newRoom);
+//            notificationRepository.save(new Notification(newRoom.getUser1(),newRoom, newRoom.getUser2().getNickname()+"님이 채팅을 시작했습니다.",false));
 
             return ResponseDto.success(ChatRoomResponseDto.builder().msg("INIT").roomId(newRoom.getRoomId()).build());
         } else{

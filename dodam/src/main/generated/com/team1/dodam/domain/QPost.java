@@ -31,6 +31,8 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final EnumPath<com.team1.dodam.shared.DealState> dealState = createEnum("dealState", com.team1.dodam.shared.DealState.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final ListPath<Image, QImage> imageList = this.<Image, QImage>createList("imageList", Image.class, QImage.class, PathInits.DIRECT2);

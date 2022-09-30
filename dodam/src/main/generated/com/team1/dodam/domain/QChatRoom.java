@@ -24,8 +24,14 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
 
     public final QTimestamped _super = new QTimestamped(this);
 
+    public final EnumPath<com.team1.dodam.shared.ChatRoomStatus> chatRoomStatus = createEnum("chatRoomStatus", com.team1.dodam.shared.ChatRoomStatus.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final StringPath itemImageUrl = createString("itemImageUrl");
+
+    public final StringPath itemName = createString("itemName");
 
     public final ListPath<ChatMessage, QChatMessage> messageList = this.<ChatMessage, QChatMessage>createList("messageList", ChatMessage.class, QChatMessage.class, PathInits.DIRECT2);
 
@@ -34,9 +40,21 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
 
     public final QPost post;
 
+    public final StringPath postOwnerImageUrl = createString("postOwnerImageUrl");
+
+    public final StringPath postOwnerLocation = createString("postOwnerLocation");
+
+    public final StringPath postOwnerNickname = createString("postOwnerNickname");
+
+    public final StringPath requestDealUserImageUrl = createString("requestDealUserImageUrl");
+
+    public final StringPath requestDealUserLocation = createString("requestDealUserLocation");
+
+    public final StringPath requestDealUserNickname = createString("requestDealUserNickname");
+
     public final StringPath roomId = createString("roomId");
 
-    public final StringPath title = createString("title");
+    public final StringPath roomName = createString("roomName");
 
     public final QUser user1;
 

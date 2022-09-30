@@ -6,7 +6,6 @@ import com.team1.dodam.domain.Notification;
 import com.team1.dodam.domain.User;
 import com.team1.dodam.dto.response.NotificationResponseDto;
 import com.team1.dodam.dto.response.ResponseDto;
-import com.team1.dodam.repository.EmitterRepository;
 import com.team1.dodam.repository.NotificationRepository;
 import com.team1.dodam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import java.util.Map;
 public class NotificationService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
-    private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private static final Map<Long, SseEmitter> sseEmitters = new HashMap<>();
@@ -45,30 +43,9 @@ public class NotificationService {
             notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), NotificationResponseDto.from(notification)));
         }
 
-        // 503 에러를 방지하기 위한 더미 이벤트 전송
-//        sendToClient(emitter, String.valueOf(userId), "EventStream Created. [userId=" + userId + "]");
         return emitter;
     }
 
-//    public void send(User user, ChatRoom chatRoom, String content) {
-//        Notification notification = createNotification(user, chatRoom, content);
-//        String id = String.valueOf(user.getId());
-//
-//        if(sseEmitters.containsKey(user.getId())){
-//            SseEmitter emitter = sseEmitters.get(user.getId());
-//            sendToClient(emitter, id, NotificationResponseDto.from(notification));
-//        }
-//
-//    }
-
-//    public Notification createNotification(User user, ChatRoom chatRoom, String content) {
-//        return Notification.builder()
-//                .user(user)
-//                .content(content)
-//                .chatRoom(chatRoom)
-//                .isRead(false)
-//                .build();
-//    }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
         try {

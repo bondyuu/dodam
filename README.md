@@ -45,7 +45,7 @@ MZ세대 들을 위한 물물교환 플랫폼
 <summary>ERD</summary>
 <div markdown="1">
 <picture>
-  <img alt="erd" src="https://user-images.githubusercontent.com/87316155/189948095-d9aaa6ff-8804-470f-8426-899a899982bd.jpg">
+  <img alt="erd" src="https://user-images.githubusercontent.com/87316155/193745375-0e7d32f1-7336-46cf-a390-690e60599556.jpg">
 </picture>
 </div>
 </details>

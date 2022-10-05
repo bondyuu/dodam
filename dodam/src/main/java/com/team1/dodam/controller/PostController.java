@@ -25,7 +25,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
-@Api(tags = {"게시글 전체 조회 및 검색/생성/상세 조회/수정/삭제/찜하기"})
+@Api(tags = {"게시글 전체 조회 및 검색/생성/상세 조회/수정/삭제/찜하기/거래 완료"})
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor

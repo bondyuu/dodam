@@ -44,6 +44,7 @@ public class User extends Timestamped {
     @Column
     private String profileUrl;
 
+    @Builder.Default
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
     @JsonManagedReference(value = "user-post")
@@ -52,6 +53,7 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();
 
+    @Builder.Default
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
     @JsonManagedReference(value = "user-image")
@@ -61,6 +63,7 @@ public class User extends Timestamped {
     private List<Image> imageList = new ArrayList<>();
 
 
+    @Builder.Default
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
     @JsonManagedReference(value = "user-chatmessage")
@@ -69,13 +72,14 @@ public class User extends Timestamped {
             orphanRemoval = true)
     private List<ChatMessage> messageList = new ArrayList<>();
 
-
+    @Builder.Default
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
     @JsonManagedReference(value = "user1-chatroom")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user1")
     private List<ChatRoom> chatRoomList1 = new ArrayList<>();
 
+    @Builder.Default
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 //    @JsonBackReference
     @JsonManagedReference(value = "user2-chatroom")

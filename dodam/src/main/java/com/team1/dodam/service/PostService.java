@@ -77,7 +77,7 @@ public class PostService {
                 .requestDto(requestDto)
                 .build());
 
-        String defaultImageUrl = "https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/default.png";
+        String defaultImageUrl = "https://bondyu.s3.ap-northeast-2.amazonaws.com/noImage.png";
         List<String> imageList = new ArrayList<>();
 
         if (imageFileList == null) {
@@ -146,7 +146,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("해당 게시글은 존재하지 않습니다."));
 
-        String defaultImageUrl = "https://inno-final-s3.s3.ap-northeast-2.amazonaws.com/default.png";
+        String defaultImageUrl = "https://bondyu.s3.ap-northeast-2.amazonaws.com/noImage.png";
         int inputFileListSize = 0;
 
         if(imageFileList == null && requestDto.getStringImageFileList() == null) { inputFileListSize = 0; }

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,27 +31,29 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
-    private static final Map<Long, SseEmitter> sseEmitters = new HashMap<>();
+    private static final Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
+
+    @Transactional
     public SseEmitter subscribe(Long userId) {
 
-        if(sseEmitters.containsKey(userId)) {
-            sseEmitters.remove(userId);
-        }
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
+        sendInit(emitter,String.valueOf(userId),"");
         sseEmitters.put(userId, emitter);
 
         emitter.onCompletion(() -> sseEmitters.remove(userId));
         emitter.onTimeout(() -> sseEmitters.remove(userId));
-        User user = userRepository.findById(userId).orElseThrow(
-                ()-> new IllegalArgumentException("회원 정보를 찾을 수 없습니다.")
-        );
-        List<Notification> notificationList = notificationRepository.findAllByUser(user)
-                .stream()
-                .filter(c -> c.getIsRead().equals(false))
-                .collect(Collectors.toList());
-        if (notificationList.size() != 0){
-            notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), "알림"));
-        }
+
+//        sendToClient(emitter,String.valueOf(userId),"");
+//        User user = userRepository.findById(userId).orElseThrow(
+//                ()-> new IllegalArgumentException("회원 정보를 찾을 수 없습니다.")
+//        );
+//        List<Notification> notificationList = notificationRepository.findAllByUser(user)
+//                .stream()
+//                .filter(c -> c.getIsRead().equals(false))
+//                .collect(Collectors.toList());
+//        if (notificationList.size() != 0){
+//            notificationList.forEach(notification -> sendToClient(emitter, String.valueOf(userId), "알림"));
+//        }
 
         return emitter;
     }
@@ -68,7 +71,19 @@ public class NotificationService {
             emitter.send(SseEmitter.event()
                     .id(id)
                     .name("message")
-                    .data(data));
+                    .data(data+"/n/n"));
+        } catch (IOException exception) {
+            Long userId = Long.parseLong(id);
+            sseEmitters.remove(userId);
+            throw new RuntimeException("연결 오류!");
+        }
+    }
+    private void sendInit(SseEmitter emitter, String id, Object data) {
+        try {
+            emitter.send(SseEmitter.event()
+                    .id(id)
+                    .name("init")
+                    .data(data+"/n/n"));
         } catch (IOException exception) {
             Long userId = Long.parseLong(id);
             sseEmitters.remove(userId);
@@ -89,7 +104,9 @@ public class NotificationService {
     public ResponseDto<?> getNotifications(UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
-        List<Notification> notificationList = notificationRepository.findAllByUser(user);
+        List<Notification> notificationList = notificationRepository.findAllByUser(user).stream()
+                .filter(c -> c.getIsRead().equals(false))
+                .collect(Collectors.toList());;
 
         return ResponseDto.success(notificationList.stream().map(NotificationResponseDto::from).collect(Collectors.toList()));
     }

@@ -36,7 +36,7 @@ public class PostResponseDto implements Serializable {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.category = String.valueOf(post.getCategory());
+        this.category = String.valueOf(post.getCategory().getDescription());
         this.postStatus = String.valueOf(post.getPostStatus());
         this.dealState = String.valueOf(post.getDealState());
         this.postVisitCount = post.getPostVisitCount();

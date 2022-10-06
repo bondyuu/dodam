@@ -36,7 +36,7 @@ MZ세대 들을 위한 물물교환 플랫폼
 <summary>서비스아키텍쳐</summary>
 <div markdown="1">
 <picture>
-  <img alt="architecture" src="https://user-images.githubusercontent.com/87316155/190352479-bb6a7238-8a61-46f7-9311-3c5e55b67650.jpg">
+  <img alt="architecture" src="https://user-images.githubusercontent.com/96328441/194005387-b4c6e5f5-e370-4280-af91-d119f7e45084.jpg">
 </picture>
 </div>
 </details>
